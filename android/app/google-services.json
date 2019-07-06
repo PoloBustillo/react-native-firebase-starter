@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "947056136688",
+    "firebase_url": "https://rn-tortilleria.firebaseio.com",
+    "project_id": "rn-tortilleria",
+    "storage_bucket": "rn-tortilleria.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:947056136688:android:8443aa6920edaeff",
+        "android_client_info": {
+          "package_name": "com.Tortillerias"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "947056136688-d06309ha4ds5hllu8hfkml5qc1cel74f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC04uEBdIDrXUVTpmwKt6_VAKBxCYjR6oE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "947056136688-d06309ha4ds5hllu8hfkml5qc1cel74f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

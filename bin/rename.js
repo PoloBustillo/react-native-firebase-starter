@@ -4,8 +4,8 @@ const replace = require('replace-in-file');
 
 const BASE_DIRECTORY = './';
 const DEFAULT_COMPANY_NAME = 'invertase';
-const DEFAULT_PACKAGE_NAME = 'com.invertase.rnfirebasestarter';
-const DEFAULT_PROJECT_NAME = 'RNFirebaseStarter';
+const DEFAULT_PACKAGE_NAME = 'com.Tortillerias';
+const DEFAULT_PROJECT_NAME = 'com.Tortillerias';
 const VALID_CHARACTERS = /^[a-zA-Z\s]+$/;
 
 const rl = readline.createInterface({

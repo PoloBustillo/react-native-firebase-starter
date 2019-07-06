@@ -1,3 +1,6 @@
 <resources>
-    <string name="app_name">RNFirebaseStarter</string>
+    <string name="app_name">Tortillerias</string>
+    <string name="facebook_app_id">456617445070823</string>
+    <string name="fb_login_protocol_scheme">fb456617445070823</string>
+
 </resources>
