@@ -25,7 +25,7 @@ class Loading extends React.Component {
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
           console.log('user logged')
-          this.props.navigation.navigate('SignUp')
+          this.props.navigation.navigate('Main')
         }else {
           console.log('not logged');
           this.props.navigation.navigate('SignUp')

@@ -11,9 +11,11 @@ import Button from "./Button";
 import FBLoginButton from './FBLoginButton';
 import colors from "../config/colors";
 import strings from "../config/strings";
+import constants from "../config/constants";
 import { StatusBar } from 'react-native';
+import firebase from 'react-native-firebase'
 
-
+//TODO: handle error MSGs
 export default class SignUp extends React.Component {
   passwordInputRef = React.createRef();
 
@@ -24,15 +26,12 @@ export default class SignUp extends React.Component {
     passwordTouched: false
   };
 
-  componentDidMount() {
-    StatusBar.setHidden(true);
-  }
 
-  handleEmailChange = (email: string) => {
+  handleEmailChange = (email) => {
     this.setState({ email: email });
   };
 
-  handlePasswordChange = (password: string) => {
+  handlePasswordChange = (password) => {
     this.setState({ password: password });
   };
 
@@ -50,8 +49,12 @@ export default class SignUp extends React.Component {
     this.setState({ passwordTouched: true });
   };
 
-  handleLoginPress = () => {
-    console.log("Login button pressed");
+  handleLoginPress = async (email, password) => {
+    await firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then((user) =>{console.warn(user);})
+      .catch(error => {console.warn(error); this.setState({ errorMessage: error.message })})
   };
 
   render() {
@@ -74,7 +77,7 @@ export default class SignUp extends React.Component {
     return (
       <KeyboardAvoidingView
         style={styles.container}
-        behavior="padding"
+        behavior={constants.IS_IOS ? "padding" : undefined}
       >
         <Image source={require('../takitoWait.gif')}  style={styles.logo}/>
         <View style={styles.form}>
@@ -102,10 +105,10 @@ export default class SignUp extends React.Component {
           />
           <Button
             label={strings.LOGIN}
-            onPress={this.handleLoginPress}
+            onPress={()=>this.handleLoginPress(this.state.email, this.state.password)}
             disabled={!email || !password}
           />
-          <FBLoginButton/>
+          <FBLoginButton navigation={this.props.navigation}/>
         </View>
       </KeyboardAvoidingView>
     );

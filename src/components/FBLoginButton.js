@@ -23,9 +23,12 @@ export default class FBLoginButton extends Component {
       const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
       // login with credential
       const firebaseUserCredential = await firebase.auth().signInWithCredential(credential);
+      //TODO: check if user is valid to see content
+      firebaseUserCredential.displayName
       console.warn(JSON.stringify(firebaseUserCredential.user.toJSON()))
+
     } catch (e) {
-      console.error(e);
+      console.warn(e);
     }
   }
 
@@ -33,13 +36,13 @@ export default class FBLoginButton extends Component {
     return (
       <View>
         <Button
-          onPress={()=>this.loginAction()}
+          onPress={()=>{this.props.navigation.navigate('Loading'); this.loginAction()}}
           style={styles.FBLoginButton}
           icon={
             <Icon
               name="facebook-square"
               size={35}
-              color="green"
+
             />
           }
           type='outline'
@@ -53,6 +56,7 @@ export default class FBLoginButton extends Component {
 
 const styles = StyleSheet.create({
   FBLoginButton: {
+    flex:1,
     height: 40,
     width: '80%',
     borderColor: 'black',

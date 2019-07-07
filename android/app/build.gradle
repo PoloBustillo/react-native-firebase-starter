@@ -118,9 +118,7 @@ android {
     }
     signingConfigs {
         release {
-            print 'AFUERA'
             if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
-                print 'ADENTRO'
                 storeFile file(MYAPP_RELEASE_STORE_FILE)
                 storePassword MYAPP_RELEASE_STORE_PASSWORD
                 keyAlias MYAPP_RELEASE_KEY_ALIAS
