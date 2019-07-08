@@ -6,12 +6,12 @@ import {
   View
 } from "react-native";
 //import Button from "./Button";
-import FormTextInput from "./FormTextInput";
-import Button from "./Button";
-import FBLoginButton from './FBLoginButton';
-import colors from "../config/colors";
-import strings from "../config/strings";
-import constants from "../config/constants";
+import FormTextInput from "../elements/FormTextInput";
+import Button from "../elements/Button";
+import FBLoginButton from '../elements/FBLoginButton';
+import colors from "../../config/colors";
+import strings from "../../config/strings";
+import constants from "../../config/constants";
 import { StatusBar } from 'react-native';
 import firebase from 'react-native-firebase'
 
@@ -57,8 +57,9 @@ export default class SignUp extends React.Component {
     await firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .then((user) =>{console.warn(user);})
-      .catch(error => {console.warn(error); this.setState({ errorMessage: error.message })})
+      //TODO: add user to redux and handle error
+      .then((user) =>{})
+      .catch(error => {this.setState({ errorMessage: error.message })})
   };
 
   render() {
@@ -83,7 +84,7 @@ export default class SignUp extends React.Component {
         style={styles.container}
         behavior={constants.IS_IOS ? "padding" : undefined}
       >
-        <Image source={require('../takitoWait.gif')}  style={styles.logo}/>
+        <Image source={require('../../takitoWait.gif')}  style={styles.logo}/>
         <View style={styles.form}>
           <FormTextInput
             value={this.state.email}

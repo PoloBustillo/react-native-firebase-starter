@@ -24,10 +24,8 @@ class Loading extends React.Component {
     setTimeout(()=>
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
-          console.log('user logged')
           this.props.navigation.navigate('Main')
         }else {
-          console.log('not logged');
           this.props.navigation.navigate('SignUp')
         }
      }), random);
@@ -54,18 +52,6 @@ class Loading extends React.Component {
         easing: Easing.linear
       }
     )).start()
-    setInterval(() => {
-      const text = 'Loading...';
-      if (this._isMounted)
-       {
-        if(this.state.count === text.length+1)
-        {
-          this.setState({count: 0})
-        }
-        this.setState({count: this.state.count+1,
-        showText: text.substring(0,this.state.count)})
-      }
-    }, 400);
   }
 
 
@@ -81,7 +67,6 @@ class Loading extends React.Component {
           <Animated.Image source={logo} style={[styles.logo, { transform: [{rotate: spin}] }]}/>
 
           <Image source={require('../../loadingCorgi.gif')} />
-          <Text style={styles.text}>{this.state.showText}</Text>
       </View>
     );
 
@@ -91,7 +76,7 @@ class Loading extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#ff5a36',
+    backgroundColor: '#FF0066',
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',

@@ -8,7 +8,7 @@ import {
   TextInputProps,
   View
 } from "react-native";
-import colors from "../config/colors";
+import colors from "../../config/colors";
 
 
 class FormTextInput extends React.Component{
@@ -77,7 +77,8 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   textInput: {
-    height: 40,
+    height: 50,
+    fontSize:20,
     ...Platform.select({
       ios: {
         borderColor: colors.SILVER,
@@ -91,7 +92,7 @@ const styles = StyleSheet.create({
     })
   },
   errorText: {
-    height: 20,
+    height: 25,
     color: colors.TORCH_RED,
     // ...and here as well
     ...Platform.select({

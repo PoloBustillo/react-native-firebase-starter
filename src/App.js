@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Loading from './components/transitions/Loading';
-import SignUp from './components/Signup';
+import SignUp from './components/views/Signup';
 import {Platform, View} from 'react-native';
-import Main from './components/Main';
+import Main from './components/navigation/Main';
 import {
   createSwitchNavigator,
   createStackNavigator,
