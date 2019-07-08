@@ -17,6 +17,10 @@ import firebase from 'react-native-firebase'
 
 //TODO: handle error MSGs
 export default class SignUp extends React.Component {
+  static navigationOptions = {
+    title: 'Home',
+    /* No more header config here! */
+  };
   passwordInputRef = React.createRef();
 
   state = {

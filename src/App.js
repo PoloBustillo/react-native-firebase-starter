@@ -19,10 +19,16 @@ const RootStack = createSwitchNavigator(
   {
     index: 0,
     initialRouteName: 'Loading',
-    headerMode: 'null',
-    navigationOptions: {
-      gesturesEnabled: true
-    }
+    /* The header config from HomeScreen is now here */
+    defaultNavigationOptions: {
+      headerStyle: {
+        backgroundColor: '#f4511e',
+      },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
+    },
   }
 )
 

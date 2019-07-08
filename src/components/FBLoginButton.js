@@ -13,12 +13,12 @@ export default class FBLoginButton extends Component {
       if (result.isCancelled) {
         throw new Error('User cancelled request');
       }
-      console.log(`Login success with permissions: ${result.grantedPermissions.toString()}`);
+      console.warn(result);
       const data = await AccessToken.getCurrentAccessToken();
       if (!data) {
         throw new Error('Something went wrong obtaining the users access token');
       }
-
+      console.warn(data);
       // create a new firebase credential with the token
       const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
       // login with credential

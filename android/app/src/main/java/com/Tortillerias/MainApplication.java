@@ -28,6 +28,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.facebook.appevents.AppEventsLogger;
+import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -66,7 +67,8 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
         new RNFirebaseNotificationsPackage(),
         new RNFirebasePerformancePackage(),
         new RNFirebaseStoragePackage(),
-        new FBSDKPackage(mCallbackManager)
+        new FBSDKPackage(mCallbackManager),
+        new RNGestureHandlerPackage()
       );
     }
 

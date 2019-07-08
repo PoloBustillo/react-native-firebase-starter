@@ -215,6 +215,7 @@ dependencies {
     implementation 'com.facebook.fresco:animated-gif:1.10.0'
     implementation "com.facebook.fresco:animated-base-support:1.3.0"
     implementation(project(':react-native-fbsdk'))
+    implementation(project(':react-native-gesture-handler'))
 
     // Needed to support API<21, though there is a small chance proguard shrinks things sufficiently
     implementation "com.android.support:multidex:1.0.3"
