@@ -2,12 +2,13 @@
 import React from "react";
 import { View, StyleSheet} from "react-native";
 import { DrawerItems } from "react-navigation";
+import colors from "../../config/colors";
 
 const CustomDrawerNavigator = props => (
   <View style={[styles.container]}>
     <DrawerItems
-      activeBackgroundColor={"black"}
-      activeTintColor={"white"}
+      activeBackgroundColor={colors.MISCHKA}
+      activeTintColor={colors.BLUE}
       iconContainerStyle={styles.icons}
       {...props}
     />

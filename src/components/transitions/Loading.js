@@ -26,15 +26,6 @@ class Loading extends React.Component {
         }
      }), random);
 
-     this.ref = firebase.firestore().collection('settings').doc('report');
-
-     let observer = this.ref.onSnapshot(docSnapshot => {
-        console.warn(`Received doc snapshot: ${docSnapshot}`);
-        // ...
-      }, err => {
-        console.warn(`Encountered error: ${err}`);
-      });
-
   }
 
   componentWillUnmount() {
