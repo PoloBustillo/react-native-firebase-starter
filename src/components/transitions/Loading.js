@@ -1,15 +1,11 @@
 import React from 'react';
+import {connect} from 'react-redux';
 import {
   StyleSheet,
-  Text,
   View,
-  Platform,
-  TouchableHighlight,
   Animated,
   Easing,
   Button,
-  DividerVertical,
-  ActivityIndicator,
   Image
 } from 'react-native';
 import logo from '../../logo.png';
@@ -29,6 +25,15 @@ class Loading extends React.Component {
           this.props.navigation.navigate('SignUp')
         }
      }), random);
+
+     this.ref = firebase.firestore().collection('settings').doc('report');
+
+     let observer = this.ref.onSnapshot(docSnapshot => {
+        console.warn(`Received doc snapshot: ${docSnapshot}`);
+        // ...
+      }, err => {
+        console.warn(`Encountered error: ${err}`);
+      });
 
   }
 
@@ -91,5 +96,12 @@ const styles = StyleSheet.create({
   }
 });
 
+const mapStateToProps = (state) => {
+  return state
+}
 
-export default Loading;
+const mapDispatchToProps = {
+
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Loading);

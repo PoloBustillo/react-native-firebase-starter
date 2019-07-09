@@ -1,22 +1,246 @@
-import * as React from "react";
-import { Button, View} from "react-native";
-import firebase from 'react-native-firebase'
-import { createAppContainer, createDrawerNavigator } from "react-navigation";
-import CustomHeader from '../navigation/CustomHeader';
+import React, { Component } from 'react'
+import { ScrollView, Switch, StyleSheet, Text, View } from 'react-native'
+import { Avatar, ListItem } from 'react-native-elements'
 
 
-class Settings extends React.Component {
+import BaseIcon from '../elements/BaseIcon'
+import Chevron from '../elements/Chevron'
+import InfoText from '../elements/InfoText'
+import Nav from '../navigation/Nav';
 
+class Settings extends Component {
+
+  state = {
+    pushNotifications: true,
+  }
+
+
+  onChangePushNotifications = () => {
+    this.setState(state => ({
+      pushNotifications: !state.pushNotifications,
+    }))
+  }
 
   render() {
     return (
-      <View>
-        <CustomHeader navigation={this.props.navigation} />
-        <Button title="Settings" onPress={console.log('pressing')} />
-      </View>
-      )
-    }
+      <ScrollView style={styles.scroll}>
+        <Nav
+          title='Configuraciones'
+          navigation={this.props.navigation}
+          leftIcon={{
+          type: 'ionicon',
+          name: 'md-list',
+          size: 26,
+          }} />
+        <View style={styles.userRow}>
+          <View style={styles.userImage}>
+            <Avatar
+              rounded
+              size="large"
+            />
+          </View>
+          <View>
+            <Text style={{ fontSize: 16 }}>Polo</Text>
+            <Text
+              style={{
+                color: 'gray',
+                fontSize: 16,
+              }}
+            >
+              leopopldo@lasdlasdklasd.com
+            </Text>
+          </View>
+        </View>
+        <InfoText text="Account" />
+        <View>
+          <ListItem
+            hideChevron
+            title="Push Notifications"
+            containerStyle={styles.listItemContainer}
+            rightElement={
+              <Switch
+                onValueChange={this.onChangePushNotifications}
+                value={this.state.pushNotifications}
+              />
+            }
+            leftIcon={
+              <BaseIcon
+                containerStyle={{
+                  backgroundColor: '#FFADF2',
+                }}
+                icon={{
+                  type: 'material',
+                  name: 'notifications',
+                }}
+              />
+            }
+          />
+          <ListItem
+            // chevron
+            title="Currency"
+            rightTitle="USD"
+            rightTitleStyle={{ fontSize: 15 }}
+            containerStyle={styles.listItemContainer}
+            leftIcon={
+              <BaseIcon
+                containerStyle={{ backgroundColor: '#FAD291' }}
+                icon={{
+                  type: 'font-awesome',
+                  name: 'money',
+                }}
+              />
+            }
+            rightIcon={<Chevron />}
+          />
+          <ListItem
+            title="Location"
+            rightTitle="New York"
+            rightTitleStyle={{ fontSize: 15 }}
+            onPress={() => this.onPressOptions()}
+            containerStyle={styles.listItemContainer}
+            leftIcon={
+              <BaseIcon
+                containerStyle={{ backgroundColor: '#57DCE7' }}
+                icon={{
+                  type: 'material',
+                  name: 'place',
+                }}
+              />
+            }
+            rightIcon={<Chevron />}
+          />
+          <ListItem
+            title="Language"
+            rightTitle="English"
+            rightTitleStyle={{ fontSize: 15 }}
+            onPress={() => this.onPressOptions()}
+            containerStyle={styles.listItemContainer}
+            leftIcon={
+              <BaseIcon
+                containerStyle={{ backgroundColor: '#FEA8A1' }}
+                icon={{
+                  type: 'material',
+                  name: 'language',
+                }}
+              />
+            }
+            rightIcon={<Chevron />}
+          />
+        </View>
+        <InfoText text="More" />
+        <View>
+          <ListItem
+            title="About US"
+            onPress={() => this.onPressOptions()}
+            containerStyle={styles.listItemContainer}
+            leftIcon={
+              <BaseIcon
+                containerStyle={{ backgroundColor: '#A4C8F0' }}
+                icon={{
+                  type: 'ionicon',
+                  name: 'md-information-circle',
+                }}
+              />
+            }
+            rightIcon={<Chevron />}
+          />
+          <ListItem
+            title="Terms and Policies"
+            onPress={() => this.onPressOptions()}
+            containerStyle={styles.listItemContainer}
+            leftIcon={
+              <BaseIcon
+                containerStyle={{ backgroundColor: '#C6C7C6' }}
+                icon={{
+                  type: 'entypo',
+                  name: 'light-bulb',
+                }}
+              />
+            }
+            rightIcon={<Chevron />}
+          />
+          <ListItem
+            title="Share our App"
+            onPress={() => this.onPressOptions()}
+            containerStyle={styles.listItemContainer}
+            leftIcon={
+              <BaseIcon
+                containerStyle={{
+                  backgroundColor: '#C47EFF',
+                }}
+                icon={{
+                  type: 'entypo',
+                  name: 'share',
+                }}
+              />
+            }
+            rightIcon={<Chevron />}
+          />
+          <ListItem
+            title="Rate Us"
+            onPress={() => this.onPressOptions()}
+            containerStyle={styles.listItemContainer}
+            badge={{
+              value: 5,
+              textStyle: { color: 'white' },
+              containerStyle: { backgroundColor: 'gray', marginTop: 0 },
+            }}
+            leftIcon={
+              <BaseIcon
+                containerStyle={{
+                  backgroundColor: '#FECE44',
+                }}
+                icon={{
+                  type: 'entypo',
+                  name: 'star',
+                }}
+              />
+            }
+            rightIcon={<Chevron />}
+          />
+          <ListItem
+            title="Send FeedBack"
+            onPress={() => this.onPressOptions()}
+            containerStyle={styles.listItemContainer}
+            leftIcon={
+              <BaseIcon
+                containerStyle={{
+                  backgroundColor: '#00C001',
+                }}
+                icon={{
+                  type: 'materialicon',
+                  name: 'feedback',
+                }}
+              />
+            }
+            rightIcon={<Chevron />}
+          />
+        </View>
+      </ScrollView>
+    )
+  }
 }
 
+const styles = StyleSheet.create({
+  scroll: {
+    backgroundColor: 'white',
+  },
+  userRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    paddingBottom: 8,
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingTop: 6,
+  },
+  userImage: {
+    marginRight: 12,
+  },
+  listItemContainer: {
+    height: 55,
+    borderWidth: 0.5,
+    borderColor: '#ECECEC',
+  },
+})
 
-export default Settings;
+export default Settings
