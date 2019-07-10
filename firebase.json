@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "android/app/build",
+    "public": "./src",
     "ignore": [
       "firebase.json",
       "**/.*",

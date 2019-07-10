@@ -7,7 +7,6 @@ import firebase from 'react-native-firebase'
 signOutUser = async () => {
   try {
       await firebase.auth().signOut();
-      this.props.navigation.navigate('Settings')
   } catch (e) {
       console.warn(e);
   }

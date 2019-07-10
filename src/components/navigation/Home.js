@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import TortilleriasList from '../views/TortilleriasList';
-import Tortilleria from '../elements/Tortilleria';
+import Tortilleria from '../views/Tortilleria';
 import {
   createSwitchNavigator,
   createStackNavigator,

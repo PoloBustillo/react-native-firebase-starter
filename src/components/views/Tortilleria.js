@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 import colors from "../../config/colors";
 
-import PhotoButton from './PhotoButton'
+import PhotoButton from '../elements/PhotoButton'
 
 
 class Tortilleria extends Component {

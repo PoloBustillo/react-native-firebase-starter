@@ -17,14 +17,13 @@ export default class FBLoginButton extends Component {
       if (!data) {
         console.warn('User cancelled requestIII')
       }
-      console.warn(data)
+
       // create a new firebase credential with the token
       const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
       // login with credential
       const firebaseUserCredential = await firebase.auth().signInWithCredential(credential);
       //TODO: check if user is valid to see content
       //firebaseUserCredential.displayName
-      console.warn(JSON.stringify(firebaseUserCredential.user.toJSON()))
 
     } catch (e) {
       console.warn(e);

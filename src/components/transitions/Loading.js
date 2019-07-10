@@ -32,19 +32,16 @@ class Loading extends React.Component {
     this._isMounted = false;
   }
 
-
   constructor(props){
     super(props);
     this.state = {
       spinValue: new Animated.Value(1),
-      count: 0,
-      showText:''
     }
     Animated.loop(Animated.timing(
       this.state.spinValue,
       {
-        toValue: 1000,
-        duration: 1000,
+        toValue: 2000,
+        duration: 2000,
         easing: Easing.linear
       }
     )).start()
@@ -61,13 +58,10 @@ class Loading extends React.Component {
     return(
       <View style={styles.container}>
           <Animated.Image source={logo} style={[styles.logo, { transform: [{rotate: spin}] }]}/>
-
           <Image source={require('../../loadingCorgi.gif')} />
       </View>
     );
-
   }
-
 }
 
 const styles = StyleSheet.create({

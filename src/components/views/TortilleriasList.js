@@ -1,12 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, View, FlatList, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, FlatList, Dimensions, TouchableOpacity } from 'react-native';
 import Nav from '../navigation/Nav';
+import FooterNav from '../elements/Footer'
 import firebase from 'react-native-firebase';
-const data = [
-  { key: 'A' }, { key: 'B' }, { key: 'C' }, { key: 'D' }, { key: 'E' }, { key: 'F' }, { key: 'G' }, { key: 'H' }, { key: 'I' }, { key: 'J' },
-  // { key: 'K' },
-  // { key: 'L' },
-];
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { Col, Row, Grid } from "react-native-easy-grid";
 
 const formatData = (data, numColumns) => {
   const numberOfFullRows = Math.floor(data.length / numColumns);
@@ -20,19 +18,43 @@ const formatData = (data, numColumns) => {
   return data;
 };
 
-const numColumns =2;
+const numColumns = 2;
 
 export default class TortilleriasList extends React.Component {
 
+  state = {
+    tortillerias:[],
+    isAdmin:false
+  }
+
+  componentWillUnmount() {
+    this.observer();
+  }
+
   componentDidMount(){
-     this.ref = firebase.firestore().collection('settings').doc('report');
-
-     let observer = this.ref.onSnapshot(docSnapshot => {
-        console.warn(`Received doc snapshot: ${docSnapshot.data().costoMasa}`);
-        // ...
-      }, err => {
-
+    console.warn('DIDMOUNT');
+    this.ref = firebase.firestore().collection('tortillerias');
+    this.observer = this.ref.onSnapshot(docSnapshot => {
+      let arrayData = [];
+      docSnapshot.forEach(function(element) {
+        arrayData.push({...element.data(),key:element.data().zona});
       });
+      this.setState({tortillerias:arrayData})
+    }, err => {
+      console.warn(err);
+    });
+
+    firebase.auth().onAuthStateChanged((user) =>{
+      if(user){
+        user.getIdTokenResult(true)
+        .then((idTokenResult) => {
+          this.setState({isAdmin:idTokenResult.claims.admin})
+          return idTokenResult.claims.admin;
+        })
+      }
+    });
+
+
 
   }
 
@@ -41,11 +63,32 @@ export default class TortilleriasList extends React.Component {
       return <View style={[styles.item, styles.itemInvisible]} />;
     }
     return (
-      <View
+      <TouchableOpacity
         style={styles.item}
+        onPress={()=>{this.props.navigation.navigate('Tortilleria',item)}}
       >
-        <Text style={styles.itemText}>{item.key}</Text>
-      </View>
+        <Grid>
+          <Row size={4}>
+            <Icon
+              name="trash"
+              size={35}
+              color={'white'}
+              style={{marginRight:90}}
+              onPress={()=>console.warn('LOL')}
+            />
+            <Icon
+              name="edit"
+              size={35}
+              color={'white'}
+            />
+          </Row>
+          <Row size={2}>
+            <Text
+            style={styles.itemText}>{item.zona}</Text>
+          </Row>
+          <Row size={4}/>
+        </Grid>
+      </TouchableOpacity>
     );
   };
 
@@ -61,10 +104,11 @@ export default class TortilleriasList extends React.Component {
         size: 26,
         }} />
       <FlatList
-        data={formatData(data, numColumns)}
+        data={formatData(this.state.tortillerias, numColumns)}
         renderItem={this.renderItem}
         numColumns={numColumns}
       />
+      <FooterNav  style={styles.footer}/>
       </View>
     );
   }
@@ -87,6 +131,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   itemText: {
+    paddingTop: '5%',
+    paddingLeft:'5%',
+    paddingRight:'5%',
     color: '#fff',
+    fontSize: 20
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 0
   },
 });

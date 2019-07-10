@@ -6,7 +6,6 @@ import Nav from '../navigation/Nav';
 
 class Settings extends React.Component {
 
-
   render() {
     return (
       <View>
