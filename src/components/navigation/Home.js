@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 
 import TortilleriasList from '../views/TortilleriasList';
-import Tortilleria from '../views/Tortilleria';
+import ReportList from '../views/ReportList';
+import ReportInfo from '../views/ReportInfo';
+
 import {
   createSwitchNavigator,
   createStackNavigator,
@@ -13,11 +15,13 @@ export const Navigator = createStackNavigator({
     navigationOptions: {
                     header: null,
                   }},
-  Tortilleria: { screen: Tortilleria },
+  ReportList: { screen: ReportList },
+  ReportInfo: { screen: ReportInfo },
 },{
   initialRouteName: 'TortilleriasList',
   headerMode: 'none'
 })
+
 
 const Home = createAppContainer(Navigator);
 

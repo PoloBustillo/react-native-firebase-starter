@@ -8,7 +8,8 @@ exports.processSignUp = functions.auth.user().onCreate(event => {
   // The Firebase user.
   // Check if user meets role criteria.
   if (user.email &&
-      user.email === 'leopoldobeguiluz1@hotmail.com') {
+      (user.email === 'leopoldobeguiluz1@hotmail.com'
+      || user.email === 'admin@tortillerias.com')) {
     console.log('same email');
     const customClaims = {
       admin: true,

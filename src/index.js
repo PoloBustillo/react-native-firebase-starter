@@ -12,4 +12,5 @@ const Root = () => (
     <App/>
   </Provider>
 )
+export default Root;
 AppRegistry.registerComponent(appName, () => Root);
