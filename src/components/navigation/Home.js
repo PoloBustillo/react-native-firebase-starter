@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import TortilleriasList from '../views/TortilleriasList';
 import ReportList from '../views/ReportList';
 import ReportInfo from '../views/ReportInfo';
+import CrearTortilleria from '../views/CrearTortilleria';
 
 import {
   createSwitchNavigator,
@@ -17,6 +18,7 @@ export const Navigator = createStackNavigator({
                   }},
   ReportList: { screen: ReportList },
   ReportInfo: { screen: ReportInfo },
+  CrearTortilleria: { screen: CrearTortilleria },
 },{
   initialRouteName: 'TortilleriasList',
   headerMode: 'none'

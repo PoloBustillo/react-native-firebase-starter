@@ -7,19 +7,128 @@ import {
   TouchableOpacity,
   View,
   Dimensions
-} from 'react-native'
+} from 'react-native';
+import {Form, Item, Input, Label, Content, Accordion, Icon} from 'native-base';
+import NumericInput from 'react-native-numeric-input'
 import colors from "../../config/colors";
-
+import Nav from '../navigation/Nav';
+import FooterNav from '../elements/Footer'
+import { Col, Row, Grid } from "react-native-easy-grid";
 import PhotoButton from '../elements/PhotoButton'
 
+const dataArray = [
+  { title: "Salsa Grande"},
+  { title: "Salsa Chica"},
+  { title: "Totopo Chico"},
+  { title: "Totopo Grande"},
+  { title: "Tortilla Harina"},
+  { title: "Derivados"},
+  { title: "Guisados"},
+  { title: "Chicharron"}
+];
 
-class Tortilleria extends Component {
+
+class ReportInfo extends Component {
+
+  state={
+    masaMolino:'',
+    masaHarina:'',
+    masaSobrante:'',
+    tortillaSobrante:''
+  }
+
+  _renderHeader(item, expanded) {
+    return (
+      <View style={{
+        flexDirection: "row",
+        padding: 10,
+        justifyContent: "space-between",
+        alignItems: "center" ,
+        backgroundColor: "#A9DAD6" }}>
+      <Text style={{ fontWeight: "600" }}>
+          {" "}{item.title}
+        </Text>
+        {expanded
+          ? <Icon style={{ fontSize: 18 }} name="remove-circle" />
+          : <Icon style={{ fontSize: 18 }} name="add-circle" />}
+      </View>
+    );
+  }
+
+  _renderContent(item) {
+    return (
+      <Text
+        style={{
+          backgroundColor: "#e3f1f1",
+          padding: 10,
+          fontStyle: "italic",
+        }}
+      >
+        {item.content}
+      </Text>
+    );
+  }
 
   renderDetail = () => {
     return (
       <View>
-        <Text style={styles.detailText}>For Sale Property Details</Text>
-        <Text style={styles.subDetailText}>details.....</Text>
+        <Text style={styles.descriptionText}>Masa Molino:</Text>
+        <NumericInput
+          value={this.state.masaMolino}
+          onChange={value => this.setState({masaMolino:value})}
+          totalWidth={150}
+          totalHeight={40}
+          iconSize={25}
+          step={.5}
+          valueType='real'
+          rounded
+          textColor='#B0228C'
+          iconStyle={{ color: 'white' }}
+          rightButtonBackgroundColor='#EA3788'
+          leftButtonBackgroundColor='#E56B70'/>
+        <Text style={styles.descriptionText}>Masa Harina:</Text>
+        <NumericInput
+          value={this.state.masaHarina}
+          onChange={value => this.setState({masaHarina:value})}
+          totalWidth={150}
+          totalHeight={40}
+          iconSize={25}
+          step={.5}
+          valueType='real'
+          rounded
+          textColor='#B0228C'
+          iconStyle={{ color: 'white' }}
+          rightButtonBackgroundColor='#EA3788'
+          leftButtonBackgroundColor='#E56B70'/>
+        <Text style={styles.descriptionText}>Masa Sobrante:</Text>
+        <NumericInput
+          value={this.state.masaSobrante}
+          onChange={value => this.setState({masaSobrante:value})}
+          totalWidth={150}
+          totalHeight={40}
+          iconSize={25}
+          step={.5}
+          valueType='real'
+          rounded
+          textColor='#B0228C'
+          iconStyle={{ color: 'white' }}
+          rightButtonBackgroundColor='#EA3788'
+          leftButtonBackgroundColor='#E56B70'/>
+        <Text style={styles.descriptionText}>Tortilla Sobrante (en pesos):</Text>
+        <NumericInput
+          value={this.state.tortillaSobrante}
+          onChange={value => this.setState({tortillaSobrante:value})}
+          totalWidth={150}
+          totalHeight={40}
+          iconSize={25}
+          step={.5}
+          valueType='real'
+          rounded
+          textColor='#B0228C'
+          iconStyle={{ color: 'white' }}
+          rightButtonBackgroundColor='#EA3788'
+          leftButtonBackgroundColor='#E56B70'/>
+
       </View>
     )
   }
@@ -28,67 +137,53 @@ class Tortilleria extends Component {
     return (
       <View>
         <Text style={styles.priceText}>$1,175,000</Text>
-        <Text style={styles.descriptionText}>1 Bed, 2 Bath, 1088 soft</Text>
-        <Text style={styles.descriptionText}>Condo, 342 Days on Trulia</Text>
-        <Text style={styles.descriptionText}>Est. Mortgage $52,604</Text>
-      </View>
-    )
-  }
-
-  renderNavigator = () => {
-    return (
-      <View
-        style={{
-          flexDirection: 'row',
-        }}
-      >
-        <TouchableOpacity style={[styles.navigatorButton, { flex: 2 }]}>
-          <Text style={styles.navigatorText}>DIRECTIONS</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.navigatorButton, { flex: 2 }]}>
-          <Text style={styles.navigatorText}>STREET VIEW</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.navigatorButton, { flex: 1 }]}>
-          <Text style={styles.navigatorText}>MAP</Text>
-        </TouchableOpacity>
-      </View>
-    )
-  }
-
-  renderContactHeader = () => {
-    return (
-      <View style={styles.headerContainer}>
-        <View style={styles.coverContainer}>
-          <ImageBackground
-            style={styles.coverImage}
-          >
-            <PhotoButton />
-          </ImageBackground>
-        </View>
       </View>
     )
   }
 
   render() {
+    const { navigation } = this.props;
+    const item = navigation.getParam('item', 'NO-ID');
+    console.warn(navigation);
+    console.warn(item);
     return (
       <View style={styles.mainviewStyle}>
+        <Nav
+          title={`Reporte de ${this.props.navigation.state.params.name}`}
+          navigation={this.props.navigation}
+          leftIcon={{
+          type: 'ionicon',
+          name: 'md-list',
+          size: 26,
+          }} />
         <ScrollView style={styles.scroll}>
-          <View style={styles.container}>
-            <View style={styles.cardContainer}>
-              {this.renderContactHeader()}
-            </View>
-          </View>
+          <Grid>
+            <Col size={7}>
+              <View style={styles.productRow}>{this.renderDetail()}</View>
+            </Col>
+            <Col size={1}/>
+            <Col size={7}>
+              <View style={styles.productRow}>{this.renderDetail()}</View>
+            </Col>
+          </Grid>
+          <Content padder style={{ backgroundColor: "white" }}>
+           <Accordion
+             dataArray={dataArray}
+             animation={true}
+             expanded={true}
+             renderHeader={this._renderHeader}
+             renderContent={this._renderContent}
+           />
+          </Content>
           <View style={styles.productRow}>{this.renderDescription()}</View>
-          <View style={styles.productRow}>{this.renderNavigator()}</View>
-          <View style={styles.productRow}>{this.renderDetail()}</View>
         </ScrollView>
         <View style={styles.footer}>
-          <TouchableOpacity style={styles.buttonFooter}>
-            <Text style={styles.textFooter}>CALL</Text>
+          <TouchableOpacity style={styles.buttonFooter} onPress={()=>{this.props.navigation.navigate('ReportInfo')}}>
+            <Text style={styles.textFooter}>GUARDAR</Text>
           </TouchableOpacity>
           <View style={styles.borderCenter} />
           <TouchableOpacity style={styles.buttonFooter}>
-            <Text style={styles.textFooter}>EMAIL</Text>
+            <Text style={styles.textFooter}>CANCELAR</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -97,19 +192,13 @@ class Tortilleria extends Component {
 }
 
 
-const styles = StyleSheet.create({cardContainer: {
+const styles = StyleSheet.create({
+  cardContainer: {
     flex: 1,
   },
   container: {
     flex: 1,
     flexDirection: 'column',
-  },
-  coverContainer: {
-    position: 'relative',
-  },
-  coverImage: {
-    height: Dimensions.get('window').width * (3 / 4),
-    width: Dimensions.get('window').width,
   },
   headerContainer: {
     alignItems: 'center',
@@ -127,13 +216,6 @@ const styles = StyleSheet.create({cardContainer: {
     flex: 1,
     flexGrow: 1,
     flexDirection: 'column',
-  },
-  coverMetaContainer: {
-    alignItems: 'flex-end',
-    flex: 1,
-    justifyContent: 'flex-end',
-    // marginBottom: 15,
-    // marginRight: 15,
   },
   footer: {
     position: 'absolute',
@@ -184,9 +266,9 @@ const styles = StyleSheet.create({cardContainer: {
     fontWeight: '400',
   },
   detailText: {
-    marginBottom: 4,
+    marginBottom: 2,
     color: colors.black,
-    fontSize: 22,
+    fontSize: 19,
     fontWeight: '600',
     letterSpacing: 0.5,
   },
@@ -198,6 +280,7 @@ const styles = StyleSheet.create({cardContainer: {
     letterSpacing: 0.5,
   },
   descriptionText: {
+    marginTop: 10,
     marginBottom: 4,
     color: colors.GRAY,
     fontSize: 16,
@@ -205,4 +288,4 @@ const styles = StyleSheet.create({cardContainer: {
     letterSpacing: 1,
   },
 });
-export default Tortilleria
+export default ReportInfo

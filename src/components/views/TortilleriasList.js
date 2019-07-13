@@ -10,10 +10,6 @@ import {
   ScrollView,
   Alert
 } from 'react-native';
-import {Form, Item, Input, Label, Button} from 'native-base'
-import {
-  Overlay
-} from 'react-native-elements'
 import Nav from '../navigation/Nav';
 import FooterNav from '../elements/Footer'
 import firebase from 'react-native-firebase';
@@ -45,10 +41,7 @@ class TortilleriasList extends React.Component {
     isAdmin:false,
     isVisible:false,
     showAlert: false,
-    toBeDeleted: '',
-    name:'',
-    address:'',
-    desc:''
+    toBeDeleted: ''
   }
 
   deleteTortilleria = (id)=>{
@@ -56,25 +49,13 @@ class TortilleriasList extends React.Component {
       .collection('tortillerias').doc(id).delete();
   }
 
-  addNewTortilleria = (name,address, desc)=>{
-    var addDoc = firebase.firestore().collection('tortillerias')
-      .add({
-        name: name,
-        zona: address,
-        poc: desc
-      })
-      .then(ref => {
-        console.warn('Added document with ID: ', ref.id);
-    });
-    this.setState({isVisible:false});
-  }
 
   getTortilleriasData = ()=>{
-    const settings = { timestampsInSnapshots: true };
-    firebase.firestore().settings(settings);
     this.ref = firebase.firestore().collection('tortillerias');
-    let arrayData = [];
+
     this.observer = this.ref.onSnapshot(docSnapshot => {
+      console.warn('ENTRO A OBSERVER');
+      let arrayData = [];
       docSnapshot.forEach(function(element) {
         arrayData.push({...element.data(),key:element.id});
       });
@@ -99,12 +80,68 @@ class TortilleriasList extends React.Component {
 
   componentWillUnmount() {
     this.observer();
+    this.messageListener();
     setState({isVisible:false});
   }
 
-  componentDidMount(){
+  async componentDidMount(){
     this.getTortilleriasData();
     this.getUserData();
+
+    firebase.messaging().hasPermission()
+    .then(enabled => {
+      if (enabled) {
+        console.warn('PERM');
+      } else {
+        console.warn('NOPERM');
+      }
+    });
+
+    this.messageListener = firebase.messaging()
+      .onMessage((message: RemoteMessage) => {
+       console.warn(message);
+   });
+
+    firebase.messaging()
+        .subscribeToTopic('reportes')
+        .then(response => console.warn('response from FCM TOPIC' + response))
+        .catch(error =>  console.warn('error from FCM TOPIC'+ error));
+
+        this.notificationListener = firebase.notifications().onNotification(notification => {
+            let notificationMessage = notification._android._notification._data.action;
+            let recordId = notification._android._notification._data.recordID;
+
+            let { title, body } = notification;
+            //  console.log('ttttt', notification)
+            // notification.android.setAutoCancel(false)
+            console.warn(title, body, notificationMessage, recordId);
+            this.getInspectionUserLogs(this.state.user);
+
+            const channelId = new firebase.notifications.Android.Channel(
+                'Default',
+                'Default',
+                firebase.notifications.Android.Importance.High
+            );
+            firebase.notifications().android.createChannel(channelId);
+
+            let notification_to_be_displayed = new firebase.notifications.Notification({
+                data: notification._android._notification._data,
+                sound: 'default',
+                show_in_foreground: true,
+                title: notification.title,
+                body: notification.body,
+            });
+
+            if (Platform.OS == 'android') {
+                notification_to_be_displayed.android
+                    .setPriority(firebase.notifications.Android.Priority.High)
+                    .android.setChannelId('Default')
+                    .android.setVibrate(1000);
+            }
+            console.warn('FOREGROUND NOTIFICATION LISTENER: \n', notification_to_be_displayed);
+
+            firebase.notifications().displayNotification(notification_to_be_displayed);
+        });
   }
 
   renderItem = ({ item, index }) => {
@@ -162,36 +199,6 @@ class TortilleriasList extends React.Component {
             size: 26,
             }} />
           <View>
-            <Overlay
-              isVisible={this.state.isVisible && this.props.isAdmin}
-              windowBackgroundColor="rgba(155, 155, 155, .5)"
-              overlayBackgroundColor="white"
-              onBackdropPress={() => this.setState({ isVisible: false })}
-              width='70%'
-              height='70%'
-            >
-            <Form>
-              <Item floatingLabel>
-                <Label>Nombre Tortilleria:</Label>
-                <Input value={this.state.name} onChangeText={(text) => this.setState({name: text})}/>
-              </Item>
-              <Item floatingLabel>
-                <Label>Dirrección:</Label>
-                <Input value={this.state.address} onChangeText={(text) => this.setState({address: text})}/>
-              </Item>
-              <Item floatingLabel last>
-                  <Label>Descripción:</Label>
-                  <Input  value={this.state.desc} onChangeText={(text) => this.setState({desc: text})}/>
-              </Item>
-              <Button full info style={{marginTop:60}}
-                onPress={()=>{
-                  this.addNewTortilleria(this.state.name,this.state.address,this.state.desc)
-                  this.setState({name:'',address:'',desc:''})
-                }}>
-               <Text>Crear Tortilleria</Text>
-             </Button>
-            </Form>
-            </Overlay>
             <FlatList
               data={formatData(this.state.tortillerias, numColumns)}
               renderItem={this.renderItem}
@@ -222,7 +229,7 @@ class TortilleriasList extends React.Component {
               this.setState({showAlert: false, toBeDeleted:''})
             }}
           />
-          <FooterNav visible={this.props.isAdmin} addMethod={()=>this.setState({isVisible:true})} style={styles.footer}/>
+          <FooterNav visible={this.props.isAdmin} addMethod={()=>{this.props.navigation.navigate('CrearTortilleria')}} style={styles.footer}/>
         </ScrollView>
       </View>
 
