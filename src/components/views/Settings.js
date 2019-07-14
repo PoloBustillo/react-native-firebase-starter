@@ -36,7 +36,7 @@ class Settings extends Component {
             />
           }
           badge={{
-            value: 5,
+            value: 0,
             textStyle: { color: 'white' },
             containerStyle: { backgroundColor: 'gray', marginTop: 0 },
           }}
@@ -55,17 +55,10 @@ class Settings extends Component {
         <ListItem
           // chevron
           hideChevron
-          title="Costo Masa"
+          title="Actualizar Costo [Productos, Masa]"
           rightTitleStyle={{ fontSize: 15 }}
           containerStyle={styles.listItemContainer}
-          rightElement={
-            <View style={{ flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
-              <Input
-              inputStyle= {{width:5}}
-              shake
-              />
-            </View>
-          }
+          rightIcon={<Chevron />}
           leftIcon={
             <BaseIcon
               containerStyle={{ backgroundColor: '#FAD291' }}
@@ -77,23 +70,7 @@ class Settings extends Component {
           }
         />
         <ListItem
-          title="Juntar Cuentas"
-          rightTitle={email}
-          rightTitleStyle={{ fontSize: 8 }}
-          onPress={() => this.onPressOptions()}
-          containerStyle={styles.listItemContainer}
-          leftIcon={
-            <BaseIcon
-              containerStyle={{ backgroundColor: '#57DCE7' }}
-              icon={{
-                type: 'material',
-                name: 'fingerprint',
-              }}
-            />
-          }
-        />
-        <ListItem
-          title="Reporte"
+          title="Cuentas Costales"
           onPress={() => this.onPressOptions()}
           containerStyle={styles.listItemContainer}
           leftIcon={
@@ -156,8 +133,8 @@ class Settings extends Component {
             </Text>
           </View>
         </View>
-        { this.props.isAdmin && <InfoText text="Cuenta" />}
-        {this.props.isAdmin && this.renderCuenta()}
+        <InfoText text="Cuenta" />
+        {this.renderCuenta()}
         <InfoText text="More" />
         <View>
           <ListItem
@@ -176,7 +153,7 @@ class Settings extends Component {
             rightIcon={<Chevron />}
           />
           <ListItem
-            title="Info Empresa"
+            title="Otros"
             onPress={() => this.onPressOptions()}
             containerStyle={styles.listItemContainer}
             leftIcon={
@@ -193,7 +170,7 @@ class Settings extends Component {
             rightIcon={<Chevron />}
           />
           <ListItem
-            title="Reporte Tecnico"
+            title="Asistencia Tecnica"
             onPress={() => this.onPressOptions()}
             containerStyle={styles.listItemContainer}
             leftIcon={
@@ -239,8 +216,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
   return {
-    user:state.sessionReducer.user,
-    isAdmin:state.sessionReducer.isAdmin
+    user:state.sessionReducer.user
   }
 }
 

@@ -10,6 +10,7 @@ import {
   ScrollView,
   Alert
 } from 'react-native';
+import { Tooltip } from 'react-native-elements';
 import Nav from '../navigation/Nav';
 import FooterNav from '../elements/Footer'
 import firebase from 'react-native-firebase';
@@ -37,14 +38,12 @@ const numColumns = 2;
 class TortilleriasList extends React.Component {
 
   state = {
-    isAdmin:false,
     isVisible:false,
     showAlert: false,
     toBeDeleted: ''
   }
 
   componentWillUnmount() {
-    this.messageListener();
     setState({isVisible:false});
   }
 
@@ -53,20 +52,6 @@ class TortilleriasList extends React.Component {
     this.props.getTortillerias();
     this.props.loadProducts();
 
-
-    firebase.messaging().hasPermission()
-    .then(enabled => {
-      if (enabled) {
-        console.warn('PERM');
-      } else {
-        console.warn('NOPERM');
-      }
-    });
-
-    this.messageListener = firebase.messaging()
-      .onMessage((message: RemoteMessage) => {
-       console.warn(message);
-   });
 
     firebase.messaging()
         .subscribeToTopic('reportes')
@@ -109,6 +94,9 @@ class TortilleriasList extends React.Component {
   }
 
   renderItem = ({ item, index }) => {
+    const tooltip = item.stock !== undefined?
+    <Text>{JSON.stringify(item.stock)}</Text>:
+    <Text>No hay nada en el stock</Text>
     if (item.empty === true) {
       return <View style={[styles.item, styles.itemInvisible]} />;
     }
@@ -119,27 +107,24 @@ class TortilleriasList extends React.Component {
       >
         <Grid>
           <Row size={4} style={{marginTop:20}}>
-            { this.props.isAdmin && <Icon
+            <Icon
                 onPress={()=>{this.setState({showAlert: true,toBeDeleted:item.key})}}
                 name="trash"
                 size={35}
                 color={'white'}
                 style={{marginRight:90}}
               />
-            }
-            { this.props.isAdmin && <Icon
+            <Icon
                 onPress={()=>{this.props.navigation.navigate('UpdateTortilleria', item)}}
                 name="edit"
                 size={35}
                 color={'white'}
               />
-            }
           </Row>
           <Row size={2}>
+          <Tooltip popover={tooltip} withOverlay withPointer height={200}>
             <Text style={styles.itemText}>{item.name}</Text>
-          </Row>
-          <Row size={2}>
-            <Text style={styles.itemText}>{item.zona}</Text>
+          </Tooltip>
           </Row>
           <Row size={4}/>
         </Grid>
@@ -190,7 +175,7 @@ class TortilleriasList extends React.Component {
               this.setState({showAlert: false, toBeDeleted:''})
             }}
           />
-          <FooterNav visible={this.props.isAdmin} addMethod={()=>{this.props.navigation.navigate('CrearTortilleria')}} style={styles.footer}/>
+          <FooterNav visible={true} addMethod={()=>{this.props.navigation.navigate('CrearTortilleria')}} style={styles.footer}/>
         </ScrollView>
       </View>
 
@@ -204,7 +189,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   item: {
-    backgroundColor: '#FEA8A1',
+    backgroundColor: 'black',
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
@@ -229,7 +214,6 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
   return {
-    isAdmin:state.sessionReducer.isAdmin,
     tortillerias:state.sessionReducer.tortillerias,
     user:state.sessionReducer.user
   }

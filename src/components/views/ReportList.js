@@ -15,14 +15,10 @@ import {
   CardItem
 } from 'native-base';
 const datas = [
-  'Simon Mignolet',
-  'Nathaniel Clyne',
-  'Dejan Lovren',
-  'Mama Sakho',
-  'Alberto Moreno',
-  'Emre Can',
-  'Joe Allen',
-  'Phil Coutinho',
+  'Report id',
+  'Report id',
+  'Report id',
+  'Report id',
 ];
 export default class SwipeableListExample extends Component {
   constructor(props) {

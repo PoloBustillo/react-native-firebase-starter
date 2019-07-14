@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import * as actionCreators from '../../actions';
+import {connect} from 'react-redux';
 import {
   ImageBackground,
   ScrollView,
@@ -34,7 +36,8 @@ class ReportInfo extends Component {
     masaMolino:'',
     masaHarina:'',
     masaSobrante:'',
-    tortillaSobrante:''
+    tortillaSobrante:'',
+    stock:{}
   }
 
   _renderHeader(item, expanded) {
@@ -46,7 +49,7 @@ class ReportInfo extends Component {
         alignItems: "center" ,
         backgroundColor: "#A9DAD6" }}>
       <Text style={{ fontWeight: "600" }}>
-          {" "}{item.title}
+          {" "}{item.name}
         </Text>
         {expanded
           ? <Icon style={{ fontSize: 18 }} name="remove-circle" />
@@ -57,15 +60,30 @@ class ReportInfo extends Component {
 
   _renderContent(item) {
     return (
-      <Text
-        style={{
-          backgroundColor: "#e3f1f1",
-          padding: 10,
-          fontStyle: "italic",
-        }}
-      >
-        {item.content}
-      </Text>
+      <Grid style={{marginTop:10}}>
+        <Col/>
+        <Col>
+          <NumericInput
+            totalWidth={150}
+            onChange={(value)=>this.setState(prevState=>({
+              stock: {                   // object that we want to update
+                ...prevState.stock,    // keep all other key-value pairs
+                [item.name]:value     // update the value of specific key
+              }
+            }))}
+            minValue={0}
+            totalHeight={40}
+            iconSize={25}
+            step={1}
+            valueType='integer'
+            rounded
+            textColor='#B0228C'
+            iconStyle={{ color: 'white' }}
+            rightButtonBackgroundColor='#EA3788'
+            leftButtonBackgroundColor='#E56B70'/>
+        </Col>
+        <Col/>
+      </Grid>
     );
   }
 
@@ -78,6 +96,7 @@ class ReportInfo extends Component {
           onChange={value => this.setState({masaMolino:value})}
           totalWidth={150}
           totalHeight={40}
+          minValue={0}
           iconSize={25}
           step={.5}
           valueType='real'
@@ -92,6 +111,7 @@ class ReportInfo extends Component {
           onChange={value => this.setState({masaHarina:value})}
           totalWidth={150}
           totalHeight={40}
+          minValue={0}
           iconSize={25}
           step={.5}
           valueType='real'
@@ -100,6 +120,13 @@ class ReportInfo extends Component {
           iconStyle={{ color: 'white' }}
           rightButtonBackgroundColor='#EA3788'
           leftButtonBackgroundColor='#E56B70'/>
+      </View>
+    )
+  }
+
+  renderDetail2 = () => {
+    return (
+      <View>
         <Text style={styles.descriptionText}>Masa Sobrante:</Text>
         <NumericInput
           value={this.state.masaSobrante}
@@ -107,6 +134,7 @@ class ReportInfo extends Component {
           totalWidth={150}
           totalHeight={40}
           iconSize={25}
+          minValue={0}
           step={.5}
           valueType='real'
           rounded
@@ -121,6 +149,7 @@ class ReportInfo extends Component {
           totalWidth={150}
           totalHeight={40}
           iconSize={25}
+          minValue={0}
           step={.5}
           valueType='real'
           rounded
@@ -132,7 +161,6 @@ class ReportInfo extends Component {
       </View>
     )
   }
-
   renderDescription = () => {
     return (
       <View>
@@ -163,16 +191,16 @@ class ReportInfo extends Component {
             </Col>
             <Col size={1}/>
             <Col size={7}>
-              <View style={styles.productRow}>{this.renderDetail()}</View>
+              <View style={styles.productRow}>{this.renderDetail2()}</View>
             </Col>
           </Grid>
           <Content padder style={{ backgroundColor: "white" }}>
            <Accordion
-             dataArray={dataArray}
+             dataArray={this.props.productos}
              animation={true}
              expanded={true}
              renderHeader={this._renderHeader}
-             renderContent={this._renderContent}
+             renderContent={this._renderContent.bind(this)}
            />
           </Content>
           <View style={styles.productRow}>{this.renderDescription()}</View>
@@ -288,4 +316,17 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
 });
-export default ReportInfo
+
+const mapStateToProps = (state) => {
+  return {
+    productos:state.settingsReducer.productos,
+    tortillerias:state.sessionReducer.tortillerias,
+    user:state.sessionReducer.user
+  }
+}
+
+const mapDispatchToProps = {
+  ...actionCreators
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReportInfo);
