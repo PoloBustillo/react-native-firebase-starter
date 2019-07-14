@@ -22,10 +22,6 @@ export default class FooterNav extends Component {
                 <Text>Nueva</Text>
               </Button>
               <Button vertical>
-                <Icon name="save" />
-                <Text>Guardar</Text>
-              </Button>
-              <Button vertical>
                 <Icon name="person" />
                 <Text>Empleados</Text>
               </Button>

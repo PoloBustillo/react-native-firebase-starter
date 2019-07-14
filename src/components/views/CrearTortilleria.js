@@ -17,23 +17,14 @@ import firebase from 'react-native-firebase';
 import { Col, Row, Grid } from "react-native-easy-grid";
 import * as actionCreators from '../../actions';
 
-const dataArray = [
-  { title: "Salsa Grande"},
-  { title: "Salsa Chica"},
-  { title: "Totopo Chico"},
-  { title: "Totopo Grande"},
-  { title: "Tortilla Harina"},
-  { title: "Derivados"},
-  { title: "Guisados"},
-  { title: "Chicharron"}
-];
 
 class CrearTortilleria extends React.Component {
 
   state = {
     name:'',
     address:'',
-    desc:''
+    desc:'',
+    stock:{}
   }
   _renderHeader(item, expanded) {
     return (
@@ -45,7 +36,7 @@ class CrearTortilleria extends React.Component {
         alignItems: "center" ,
         backgroundColor: "#A9DAD6" }}>
       <Text style={{ fontWeight: "600" }}>
-          {" "}{item.title}
+          {" "}{item.name}
         </Text>
         {expanded
           ? <Icon style={{ fontSize: 18 }} name="remove-circle" />
@@ -61,10 +52,17 @@ class CrearTortilleria extends React.Component {
         <Col>
           <NumericInput
             totalWidth={150}
+            onChange={(value)=>this.setState(prevState=>({
+              stock: {                   // object that we want to update
+                ...prevState.stock,    // keep all other key-value pairs
+                [item.name]:value     // update the value of specific key
+              }
+            }))}
+            minValue={0}
             totalHeight={40}
             iconSize={25}
-            step={.5}
-            valueType='real'
+            step={1}
+            valueType='integer'
             rounded
             textColor='#B0228C'
             iconStyle={{ color: 'white' }}
@@ -76,17 +74,19 @@ class CrearTortilleria extends React.Component {
     );
   }
 
-  addNewTortilleria = (name,address, desc)=>{
+  addNewTortilleria = (name,address, desc, stock)=>{
     var addDoc = firebase.firestore().collection('tortillerias')
       .add({
         name: name,
         zona: address,
-        poc: desc
+        poc: desc,
+        stock:stock
       })
       .then(ref => {
         console.log('Added document with ID: ', ref.id);
     });
-    this.setState({isVisible:false});
+    console.log(stock);
+
   }
 
   render() {
@@ -116,16 +116,16 @@ class CrearTortilleria extends React.Component {
               </Item>
               <Content padder style={{ backgroundColor: "white" }}>
                <Accordion
-                 dataArray={dataArray}
+                 dataArray={this.props.productos}
                  animation={true}
                  expanded={true}
                  renderHeader={this._renderHeader}
-                 renderContent={this._renderContent}
+                 renderContent={this._renderContent.bind(this)}
                />
               </Content>
               <Button full info style={{marginTop:60}}
                 onPress={()=>{
-                  this.addNewTortilleria(this.state.name,this.state.address,this.state.desc)
+                  this.addNewTortilleria(this.state.name,this.state.address,this.state.desc,this.state.stock)
                   this.setState({name:'',address:'',desc:''})
                   this.props.navigation.navigate('TortilleriasList');
                 }}>
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
   return {
-    isAdmin:state.sessionReducer.isAdmin
+    productos:state.settingsReducer.productos
   }
 }
 

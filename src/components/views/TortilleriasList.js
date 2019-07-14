@@ -37,56 +37,22 @@ const numColumns = 2;
 class TortilleriasList extends React.Component {
 
   state = {
-    tortillerias:[],
     isAdmin:false,
     isVisible:false,
     showAlert: false,
     toBeDeleted: ''
   }
 
-  deleteTortilleria = (id)=>{
-    this.ref = firebase.firestore()
-      .collection('tortillerias').doc(id).delete();
-  }
-
-
-  getTortilleriasData = ()=>{
-    this.ref = firebase.firestore().collection('tortillerias');
-
-    this.observer = this.ref.onSnapshot(docSnapshot => {
-      console.warn('ENTRO A OBSERVER');
-      let arrayData = [];
-      docSnapshot.forEach(function(element) {
-        arrayData.push({...element.data(),key:element.id});
-      });
-      this.setState({tortillerias:arrayData})
-    }, err => {
-      console.warn(err);
-    });
-  }
-
-  getUserData= ()=>{
-    firebase.auth().onAuthStateChanged(async (user) =>{
-      if(user){
-        this.props.loginUserSuccess(user,false);
-        let isAdmin = await user.getIdTokenResult(true)
-        .then((idTokenResult) => {
-          return Promise.resolve(idTokenResult.claims.admin);
-        })
-        this.props.loginUserSuccess(user,isAdmin);
-      }
-    });
-  }
-
   componentWillUnmount() {
-    this.observer();
     this.messageListener();
     setState({isVisible:false});
   }
 
-  async componentDidMount(){
-    this.getTortilleriasData();
-    this.getUserData();
+  async componentWillMount(){
+    this.props.loginUser();
+    this.props.getTortillerias();
+    this.props.loadProducts();
+
 
     firebase.messaging().hasPermission()
     .then(enabled => {
@@ -115,7 +81,6 @@ class TortilleriasList extends React.Component {
             //  console.log('ttttt', notification)
             // notification.android.setAutoCancel(false)
             console.warn(title, body, notificationMessage, recordId);
-            this.getInspectionUserLogs(this.state.user);
 
             const channelId = new firebase.notifications.Android.Channel(
                 'Default',
@@ -132,12 +97,11 @@ class TortilleriasList extends React.Component {
                 body: notification.body,
             });
 
-            if (Platform.OS == 'android') {
-                notification_to_be_displayed.android
-                    .setPriority(firebase.notifications.Android.Priority.High)
-                    .android.setChannelId('Default')
-                    .android.setVibrate(1000);
-            }
+            notification_to_be_displayed.android
+                .setPriority(firebase.notifications.Android.Priority.High)
+                .android.setChannelId('Default')
+                .android.setVibrate(1000);
+
             console.warn('FOREGROUND NOTIFICATION LISTENER: \n', notification_to_be_displayed);
 
             firebase.notifications().displayNotification(notification_to_be_displayed);
@@ -153,10 +117,6 @@ class TortilleriasList extends React.Component {
         style={styles.item}
         onPress={()=>{this.props.navigation.navigate('ReportList',item)}}
       >
-        <NavigationEvents
-        onWillFocus={() => {this.getTortilleriasData();}}
-        onWillBlur={() => {this.observer()}}
-        />
         <Grid>
           <Row size={4} style={{marginTop:20}}>
             { this.props.isAdmin && <Icon
@@ -168,6 +128,7 @@ class TortilleriasList extends React.Component {
               />
             }
             { this.props.isAdmin && <Icon
+                onPress={()=>{this.props.navigation.navigate('UpdateTortilleria', item)}}
                 name="edit"
                 size={35}
                 color={'white'}
@@ -200,7 +161,7 @@ class TortilleriasList extends React.Component {
             }} />
           <View>
             <FlatList
-              data={formatData(this.state.tortillerias, numColumns)}
+              data={formatData(this.props.tortillerias, numColumns)}
               renderItem={this.renderItem}
               numColumns={numColumns}
             />
@@ -221,7 +182,7 @@ class TortilleriasList extends React.Component {
               this.setState({showAlert: false, toBeDeleted:''})
             }}
             onConfirmPressed={() => {
-              this.deleteTortilleria(this.state.toBeDeleted);
+              this.props.deleteTortilleria(this.state.toBeDeleted);
               this.setState({showAlert: false,toBeDeleted:''})
 
             }}
@@ -254,11 +215,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   itemText: {
-    paddingTop: '5%',
-    paddingLeft:'5%',
-    paddingRight:'5%',
+    marginTop: '5%',
+    marginLeft:'5%',
+    marginRight:'5%',
     color: '#fff',
-    fontSize: 20
+    fontSize: 18
   },
   footer: {
     position: 'absolute',
@@ -268,7 +229,9 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
   return {
-    isAdmin:state.sessionReducer.isAdmin
+    isAdmin:state.sessionReducer.isAdmin,
+    tortillerias:state.sessionReducer.tortillerias,
+    user:state.sessionReducer.user
   }
 }
 
