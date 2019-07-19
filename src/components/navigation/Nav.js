@@ -3,7 +3,6 @@ import { StyleSheet, Text, View } from 'react-native'
 import { Icon } from 'react-native-elements'
 import colors from "../../config/colors";
 import firebase from 'react-native-firebase'
-
 signOutUser = async () => {
   try {
       await firebase.auth().signOut();
@@ -37,6 +36,19 @@ const Nav = ({ title, navigation, leftIcon }) => (
       </View>
       <View style={styles.rightRow}>
         <Text onPress={()=>signOutUser()} style={styles.logoutText}>Salir</Text>
+        <Icon
+          size={34}
+          type="home"
+          name="home"
+          underlayColor="transparent"
+          underlineColorAndroid="transparent"
+          hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+          color={colors.BLUE}
+          iconStyle={styles.icon}
+          containerStyle={styles.iconContainer}
+          onPress={() => navigation.openDrawer()}
+          {...leftIcon}
+        />
       </View>
     </View>
   </View>
@@ -85,7 +97,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     color: 'black',
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: '400',
   },
 })

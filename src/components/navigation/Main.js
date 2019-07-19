@@ -4,7 +4,7 @@ import { createAppContainer, createDrawerNavigator } from "react-navigation";
 
 import CustomDrawerNavigator from "./CustomDrawerNavigator";
 import Home from "./Home";
-import Settings from "../views/Settings";
+import SettingNavigation from "./SettingNavigation";
 import About from "../views/About";
 
 const MainNavigator = createDrawerNavigator(
@@ -26,7 +26,7 @@ const MainNavigator = createDrawerNavigator(
         ),
         drawerLabel: "Configuraciones"
       },
-      screen: Settings
+      screen: SettingNavigation
     },
 
     About: {

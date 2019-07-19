@@ -16,6 +16,7 @@ import Nav from '../navigation/Nav';
 import firebase from 'react-native-firebase';
 import { Col, Row, Grid } from "react-native-easy-grid";
 import * as actionCreators from '../../actions';
+import InfoText from '../elements/InfoText'
 
 
 class CrearTortilleria extends React.Component {
@@ -102,18 +103,11 @@ class CrearTortilleria extends React.Component {
             size: 26,
             }} />
             <Form>
-              <Item floatingLabel>
-                <Label>Nombre Tortilleria:</Label>
+              <InfoText text="Nombre Tortilleria" style={styles.container}/>
+              <Item>
                 <Input value={this.state.name} onChangeText={(text) => this.setState({name: text})}/>
               </Item>
-              <Item floatingLabel>
-                <Label>Dirrección:</Label>
-                <Input value={this.state.address} onChangeText={(text) => this.setState({address: text})}/>
-              </Item>
-              <Item floatingLabel last>
-                  <Label>Descripción:</Label>
-                  <Input  value={this.state.desc} onChangeText={(text) => this.setState({desc: text})}/>
-              </Item>
+              <InfoText text="Inventario" style={styles.container}/>
               <Content padder style={{ backgroundColor: "white" }}>
                <Accordion
                  dataArray={this.props.productos}
@@ -129,7 +123,7 @@ class CrearTortilleria extends React.Component {
                   this.setState({name:'',address:'',desc:''})
                   this.props.navigation.navigate('TortilleriasList');
                 }}>
-               <Text>Crear Tortilleria</Text>
+               <Text style={styles.buttonText}>Crear Tortilleria</Text>
              </Button>
             </Form>
         </ScrollView>
@@ -147,12 +141,21 @@ const styles = StyleSheet.create({
   itemInvisible: {
     backgroundColor: 'transparent',
   },
+  buttonText: {
+    color: '#000',
+    fontSize: 20,
+    fontWeight:'bold'
+  },
   itemText: {
     paddingTop: '5%',
     paddingLeft:'5%',
     paddingRight:'5%',
     color: '#fff',
     fontSize: 20
+  },
+  container: {
+    flex: 1,
+    marginVertical: 20,
   },
   footer: {
     position: 'absolute',

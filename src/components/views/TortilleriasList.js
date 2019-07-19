@@ -94,9 +94,15 @@ class TortilleriasList extends React.Component {
   }
 
   renderItem = ({ item, index }) => {
-    const tooltip = item.stock !== undefined?
-    <Text>{JSON.stringify(item.stock)}</Text>:
-    <Text>No hay nada en el stock</Text>
+    let tooltip = <Text style={styles.itemText}>Inventario Vacio</Text>
+    if(item.stock !== undefined){
+      tooltip = Object.entries(item.stock).map((key) => {
+        return(
+          <View>
+            <Text style={styles.tooltipText}>{`${key[0]} : ${key[1]}`}</Text>
+          </View>);
+      })
+    }
     if (item.empty === true) {
       return <View style={[styles.item, styles.itemInvisible]} />;
     }
@@ -112,19 +118,26 @@ class TortilleriasList extends React.Component {
                 name="trash"
                 size={35}
                 color={'white'}
-                style={{marginRight:90}}
+                style={{marginRight:30}}
               />
+            <Tooltip popover={tooltip} withOverlay height={200}>
+              <Icon
+                name="archive"
+                size={35}
+                color={'white'}
+                style={{marginRight:30}}
+              />
+            </Tooltip>
             <Icon
                 onPress={()=>{this.props.navigation.navigate('UpdateTortilleria', item)}}
                 name="edit"
                 size={35}
                 color={'white'}
               />
+
           </Row>
           <Row size={2}>
-          <Tooltip popover={tooltip} withOverlay withPointer height={200}>
             <Text style={styles.itemText}>{item.name}</Text>
-          </Tooltip>
           </Row>
           <Row size={4}/>
         </Grid>
@@ -203,8 +216,14 @@ const styles = StyleSheet.create({
     marginTop: '5%',
     marginLeft:'5%',
     marginRight:'5%',
+    textAlign:'center',
     color: '#fff',
-    fontSize: 18
+    fontSize: 22
+  },
+  tooltipText: {
+    textAlign:'center',
+    color: '#fff',
+    fontSize: 14
   },
   footer: {
     position: 'absolute',

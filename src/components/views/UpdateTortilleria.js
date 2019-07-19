@@ -11,33 +11,37 @@ import {
   Alert
 } from 'react-native';
 import NumericInput from 'react-native-numeric-input'
-import {Form, Item, Input, Label, Button, Content, Accordion, Icon} from 'native-base'
+import {Form, Item, Input, Label, Content, Accordion, Icon} from 'native-base'
 import Nav from '../navigation/Nav';
 import firebase from 'react-native-firebase';
 import { Col, Row, Grid } from "react-native-easy-grid";
 import * as actionCreators from '../../actions';
+import InfoText from '../elements/InfoText'
+import FormTextInput from '../elements/FormTextInput';
+import Button from '../elements/Button'
 
 
 class UpdateTortilleria extends React.Component {
 
-
   state = {
     name:'',
-    zona:'',
-    poc:'',
     key:'',
     stock:{}
   }
   componentDidMount(){
     this.setState(this.props.navigation.state.params);
+    this.count = {}
   }
 
-  updateTortilleria = (name,address, desc, stock, id)=>{
+  updateTortilleria = (name,stock, id)=>{
+    console.warn(this.count);
+    for(proCount in this.count){
+      console.warn(proCount);
+      console.warn(this.count[proCount])
+    }
     var addDoc = firebase.firestore().collection('tortillerias').doc(id)
       .update({
         name: name,
-        zona: address,
-        poc: desc,
         stock: stock
       })
       .then(ref => {
@@ -68,17 +72,32 @@ class UpdateTortilleria extends React.Component {
   _renderContent(item) {
     return (
       <Grid style={{marginTop:10}}>
-        <Col/>
         <Col>
+          <Text style={{ fontWeight: "600" }}>
+            Inventario
+          </Text>
           <NumericInput
-            value={this.state.stock[item.name]}
-            totalWidth={150}
-            onChange={(value)=>this.setState(prevState=>({
-              stock: {                   // object that we want to update
-                ...prevState.stock,    // keep all other key-value pairs
-                [item.name]:value     // update the value of specific key
-              }
-            }))}
+            type='none'
+            initValue={this.state.stock[item.name]}
+            minValue={this.state.stock[item.name]}
+            maxValue={this.state.stock[item.name]}
+            totalWidth={120}
+            editable={false}
+            totalHeight={40}
+            iconSize={25}
+            rounded
+            textColor='#B0228C'
+            iconStyle={{ color: 'white' }}
+            rightButtonBackgroundColor='#EA3788'
+            leftButtonBackgroundColor='#E56B70'/>
+        </Col>
+        <Col>
+          <Text style={{ fontWeight: "600" }}>
+            Añadir
+          </Text>
+          <NumericInput
+            totalWidth={120}
+            onChange={(value)=>{this.count={...this.count,[item.name]:value}}}
             minValue={0}
             totalHeight={40}
             iconSize={25}
@@ -90,7 +109,6 @@ class UpdateTortilleria extends React.Component {
             rightButtonBackgroundColor='#EA3788'
             leftButtonBackgroundColor='#E56B70'/>
         </Col>
-        <Col/>
       </Grid>
     );
   }
@@ -107,19 +125,13 @@ class UpdateTortilleria extends React.Component {
             name: 'md-list',
             size: 26,
             }} />
+
             <Form>
-              <Item floatingLabel>
-                <Label>Nombre Tortilleria:</Label>
+              <InfoText text="Nombre Tortilleria" style={styles.container}/>
+              <Item>
                 <Input value={this.state.name} onChangeText={(text) => this.setState({name: text})}/>
               </Item>
-              <Item floatingLabel>
-                <Label>Dirrección:</Label>
-                <Input value={this.state.zona} onChangeText={(text) => this.setState({zona: text})}/>
-              </Item>
-              <Item floatingLabel last>
-                  <Label>Descripción:</Label>
-                  <Input  value={this.state.poc} onChangeText={(text) => this.setState({poc: text})}/>
-              </Item>
+              <InfoText text="Inventario" style={styles.container}/>
               <Content padder style={{ backgroundColor: "white" }}>
                <Accordion
                  dataArray={this.props.productos}
@@ -129,14 +141,14 @@ class UpdateTortilleria extends React.Component {
                  renderContent={this._renderContent.bind(this)}
                />
               </Content>
-              <Button full info style={{marginTop:60}}
+              <Button
+                label="Actualizar Tortilleria"
                 onPress={()=>{
-                  this.updateTortilleria(this.state.name,this.state.zona,
-                    this.state.poc, this.state.stock, this.state.key)
+                  this.updateTortilleria(this.state.name,
+                    this.state.stock, this.state.key)
                   this.props.navigation.navigate('TortilleriasList');
-                }}>
-               <Text>Actualizar Tortilleria</Text>
-             </Button>
+                }}
+              />
             </Form>
         </ScrollView>
       </View>
@@ -159,6 +171,11 @@ const styles = StyleSheet.create({
     paddingRight:'5%',
     color: '#fff',
     fontSize: 20
+  },
+  buttonText: {
+    color: '#000',
+    fontSize: 20,
+    fontWeight:'bold'
   },
   footer: {
     position: 'absolute',

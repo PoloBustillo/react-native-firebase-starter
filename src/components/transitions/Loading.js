@@ -22,7 +22,7 @@ class Loading extends React.Component {
         if (user) {
           this.props.navigation.navigate('Main')
         }else {
-          this.props.navigation.navigate('SignUp')
+          this.props.navigation.navigate('Main')
         }
      }), random);
 

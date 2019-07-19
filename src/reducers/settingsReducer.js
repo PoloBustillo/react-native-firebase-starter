@@ -1,7 +1,7 @@
 import * as ActionTypes from '../actions/types';
 
 const INITIAL_STATE = {
-  costoMase: 0,
+  costoMasa: 0,
   productos:[],
   error:''
 };

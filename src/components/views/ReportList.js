@@ -20,7 +20,7 @@ const datas = [
   'Report id',
   'Report id',
 ];
-export default class SwipeableListExample extends Component {
+export default class ReportList extends Component {
   constructor(props) {
     super(props);
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });

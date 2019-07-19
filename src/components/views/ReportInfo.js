@@ -16,18 +16,7 @@ import colors from "../../config/colors";
 import Nav from '../navigation/Nav';
 import FooterNav from '../elements/Footer'
 import { Col, Row, Grid } from "react-native-easy-grid";
-import PhotoButton from '../elements/PhotoButton'
-
-const dataArray = [
-  { title: "Salsa Grande"},
-  { title: "Salsa Chica"},
-  { title: "Totopo Chico"},
-  { title: "Totopo Grande"},
-  { title: "Tortilla Harina"},
-  { title: "Derivados"},
-  { title: "Guisados"},
-  { title: "Chicharron"}
-];
+import InfoText from '../elements/InfoText';
 
 
 class ReportInfo extends Component {
@@ -36,8 +25,11 @@ class ReportInfo extends Component {
     masaMolino:'',
     masaHarina:'',
     masaSobrante:'',
+    masaFria:'',
+    tortillaAnterior:'',
     tortillaSobrante:'',
-    stock:{}
+    total:'',
+    productosCuenta:[]
   }
 
   _renderHeader(item, expanded) {
@@ -90,7 +82,7 @@ class ReportInfo extends Component {
   renderDetail = () => {
     return (
       <View>
-        <Text style={styles.descriptionText}>Masa Molino:</Text>
+        <Text style={styles.descriptionText}>Masa Molino[kg]:</Text>
         <NumericInput
           value={this.state.masaMolino}
           onChange={value => this.setState({masaMolino:value})}
@@ -105,7 +97,7 @@ class ReportInfo extends Component {
           iconStyle={{ color: 'white' }}
           rightButtonBackgroundColor='#EA3788'
           leftButtonBackgroundColor='#E56B70'/>
-        <Text style={styles.descriptionText}>Masa Harina:</Text>
+        <Text style={styles.descriptionText}>Harina [kg]:</Text>
         <NumericInput
           value={this.state.masaHarina}
           onChange={value => this.setState({masaHarina:value})}
@@ -127,7 +119,22 @@ class ReportInfo extends Component {
   renderDetail2 = () => {
     return (
       <View>
-        <Text style={styles.descriptionText}>Masa Sobrante:</Text>
+      <Text style={styles.descriptionText}>Tortilla[Pesos]:</Text>
+      <NumericInput
+        value={this.state.tortillaSobrante}
+        onChange={value => this.setState({tortillaSobrante:value})}
+        totalWidth={150}
+        totalHeight={40}
+        iconSize={25}
+        minValue={0}
+        step={.5}
+        valueType='real'
+        rounded
+        textColor='#B0228C'
+        iconStyle={{ color: 'white' }}
+        rightButtonBackgroundColor='#EA3788'
+        leftButtonBackgroundColor='#E56B70'/>
+        <Text style={styles.descriptionText}>Masa Sobrante[kg]:</Text>
         <NumericInput
           value={this.state.masaSobrante}
           onChange={value => this.setState({masaSobrante:value})}
@@ -142,24 +149,12 @@ class ReportInfo extends Component {
           iconStyle={{ color: 'white' }}
           rightButtonBackgroundColor='#EA3788'
           leftButtonBackgroundColor='#E56B70'/>
-        <Text style={styles.descriptionText}>Tortilla Sobrante (en pesos):</Text>
-        <NumericInput
-          value={this.state.tortillaSobrante}
-          onChange={value => this.setState({tortillaSobrante:value})}
-          totalWidth={150}
-          totalHeight={40}
-          iconSize={25}
-          minValue={0}
-          step={.5}
-          valueType='real'
-          rounded
-          textColor='#B0228C'
-          iconStyle={{ color: 'white' }}
-          rightButtonBackgroundColor='#EA3788'
-          leftButtonBackgroundColor='#E56B70'/>
-
       </View>
     )
+  }
+
+  calcularCuenta = ()=>{
+
   }
   renderDescription = () => {
     return (
@@ -170,10 +165,7 @@ class ReportInfo extends Component {
   }
 
   render() {
-    const { navigation } = this.props;
-    const item = navigation.getParam('item', 'NO-ID');
-    console.warn(navigation);
-    console.warn(item);
+    console.warn(this.props.navigation.state.params);
     return (
       <View style={styles.mainviewStyle}>
         <Nav
@@ -203,6 +195,8 @@ class ReportInfo extends Component {
              renderContent={this._renderContent.bind(this)}
            />
           </Content>
+          <InfoText text="Masa Fria:" style={styles.container}/>
+          <InfoText text="Tortilla dia anterior:" style={styles.container}/>
           <View style={styles.productRow}>{this.renderDescription()}</View>
         </ScrollView>
         <View style={styles.footer}>

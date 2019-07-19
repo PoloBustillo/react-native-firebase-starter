@@ -55,6 +55,7 @@ class Settings extends Component {
         <ListItem
           // chevron
           hideChevron
+          onPress={()=>{this.props.navigation.navigate('SettingsProducts')}}
           title="Actualizar Costo [Productos, Masa]"
           rightTitleStyle={{ fontSize: 15 }}
           containerStyle={styles.listItemContainer}
