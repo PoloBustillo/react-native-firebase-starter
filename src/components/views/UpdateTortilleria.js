@@ -29,20 +29,18 @@ class UpdateTortilleria extends React.Component {
     stock:{}
   }
   componentDidMount(){
-    this.setState(this.props.navigation.state.params);
-    this.count = {}
+    this.setState({...this.props.navigation.state.params, count:{}});
   }
 
   updateTortilleria = (name,stock, id)=>{
-    console.warn(this.count);
-    for(proCount in this.count){
-      console.warn(proCount);
-      console.warn(this.count[proCount])
+    let newStock=stock;
+    for(proCount in this.state.count){
+      newStock[proCount]=newStock[proCount]+this.state.count[proCount]
     }
     var addDoc = firebase.firestore().collection('tortillerias').doc(id)
       .update({
         name: name,
-        stock: stock
+        stock: newStock
       })
       .then(ref => {
         console.log('Updated document with ID: ', ref);
@@ -72,33 +70,29 @@ class UpdateTortilleria extends React.Component {
   _renderContent(item) {
     return (
       <Grid style={{marginTop:10}}>
-        <Col>
+        <Col size={1}>
+        </Col>
+        <Col size={3}>
           <Text style={{ fontWeight: "600" }}>
             Inventario
           </Text>
-          <NumericInput
-            type='none'
-            initValue={this.state.stock[item.name]}
-            minValue={this.state.stock[item.name]}
-            maxValue={this.state.stock[item.name]}
-            totalWidth={120}
-            editable={false}
-            totalHeight={40}
-            iconSize={25}
-            rounded
-            textColor='#B0228C'
-            iconStyle={{ color: 'white' }}
-            rightButtonBackgroundColor='#EA3788'
-            leftButtonBackgroundColor='#E56B70'/>
+          <Text style={{ fontWeight: "600" }}>
+            {`${this.state.stock[item.name]} ${item.name}`}
+          </Text>
         </Col>
-        <Col>
+        <Col size={3}>
           <Text style={{ fontWeight: "600" }}>
             Añadir
           </Text>
           <NumericInput
+            value={this.state.count[item.name]}
             totalWidth={120}
-            onChange={(value)=>{this.count={...this.count,[item.name]:value}}}
-            minValue={0}
+            onChange={
+              (value)=>{
+                let temp = {...this.state.count,[item.name]:value}
+                this.setState({count:temp})
+              }
+            }
             totalHeight={40}
             iconSize={25}
             step={1}
@@ -109,6 +103,14 @@ class UpdateTortilleria extends React.Component {
             rightButtonBackgroundColor='#EA3788'
             leftButtonBackgroundColor='#E56B70'/>
         </Col>
+        <Col size={3}>
+          <Text style={{ fontWeight: "600", marginLeft:10}}>
+            {`Total
+              ${this.state.stock[item.name]}+${this.state.count[item.name]===undefined?0:this.state.count[item.name]}`
+            }
+          </Text>
+        </Col>
+
       </Grid>
     );
   }

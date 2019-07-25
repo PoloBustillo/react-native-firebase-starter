@@ -11,11 +11,10 @@ export default class FBLoginButton extends Component {
     try {
       const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
       if (result.isCancelled) {
-        console.warn('User cancelled request')
       }
       const data = await AccessToken.getCurrentAccessToken();
       if (!data) {
-        console.warn('User cancelled requestIII')
+    
       }
 
       // create a new firebase credential with the token

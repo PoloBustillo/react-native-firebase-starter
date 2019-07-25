@@ -165,7 +165,6 @@ class ReportInfo extends Component {
   }
 
   render() {
-    console.warn(this.props.navigation.state.params);
     return (
       <View style={styles.mainviewStyle}>
         <Nav

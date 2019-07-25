@@ -35,20 +35,6 @@ const Nav = ({ title, navigation, leftIcon }) => (
         </Text>
       </View>
       <View style={styles.rightRow}>
-        <Text onPress={()=>signOutUser()} style={styles.logoutText}>Salir</Text>
-        <Icon
-          size={34}
-          type="home"
-          name="home"
-          underlayColor="transparent"
-          underlineColorAndroid="transparent"
-          hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-          color={colors.BLUE}
-          iconStyle={styles.icon}
-          containerStyle={styles.iconContainer}
-          onPress={() => navigation.openDrawer()}
-          {...leftIcon}
-        />
       </View>
     </View>
   </View>
