@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import {connect} from 'react-redux';
 import { ListView } from 'react-native';
+import moment from 'moment';
 import Nav from '../navigation/Nav';
-
+import * as actionCreators from '../../actions';
 import {
   Container,
   Header,
@@ -14,21 +16,19 @@ import {
   Card,
   CardItem
 } from 'native-base';
-const datas = [
-  'Report id',
-  'Report id',
-  'Report id',
-  'Report id',
-];
-export default class ReportList extends Component {
+
+
+class ReportList extends Component {
+
   constructor(props) {
     super(props);
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
       basic: true,
-      listViewData: datas,
+      listViewData: this.props.reportes,
     };
   }
+
   deleteRow(secId, rowId, rowMap) {
     rowMap[`${secId}${rowId}`].props.closeRow();
     const newData = [...this.state.listViewData];
@@ -36,6 +36,7 @@ export default class ReportList extends Component {
     this.setState({ listViewData: newData });
   }
   render() {
+    console.warn(this.props.navigation.state.params);
     const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     return (
       <Container>
@@ -52,7 +53,7 @@ export default class ReportList extends Component {
             <CardItem
               header
               button
-              onPress={()=>{this.props.navigation.navigate('ReportInfo',this.props.navigation.state.params)}}>
+              onPress={()=>{this.props.navigation.navigate('ReportInfo',{...this.props.navigation.state.params,reportes: this.props.reportes})}}>
               <Text>Crear un nuevo reporte</Text>
             </CardItem>
           </Card>
@@ -62,10 +63,10 @@ export default class ReportList extends Component {
             dataSource={this.ds.cloneWithRows(this.state.listViewData)}
             renderRow={data =>
               <ListItem>
-                <Text> {data} </Text>
+                <Text> {moment.unix(data.fecha.seconds).format("MM/DD/YYYY")} </Text>
               </ListItem>}
             renderLeftHiddenRow={data =>
-              <Button full onPress={() => alert(data)}>
+              <Button full onPress={() => alert(data.fecha.toString())}>
                 <Icon active name="information-circle" />
               </Button>}
             renderRightHiddenRow={(data, secId, rowId, rowMap) =>
@@ -78,3 +79,15 @@ export default class ReportList extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    reportes:state.sessionReducer.reportes
+  }
+}
+
+const mapDispatchToProps = {
+  ...actionCreators
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReportList);

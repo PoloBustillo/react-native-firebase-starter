@@ -7,6 +7,7 @@ import CrearTortilleria from '../views/CrearTortilleria';
 import UpdateTortilleria from '../views/UpdateTortilleria'
 import Settings from '../views/Settings';
 import SettingsProducts from '../views/SettingsProducts';
+import Loading from '../transitions/Loading';
 
 import {
   createSwitchNavigator,
@@ -20,6 +21,7 @@ export const Navigator = createStackNavigator({
                     header: null,
                   }},
   ReportList: { screen: ReportList },
+  Loading: { screen: Loading },
   ReportInfo: { screen: ReportInfo },
   CrearTortilleria: { screen: CrearTortilleria },
   UpdateTortilleria: { screen: UpdateTortilleria }

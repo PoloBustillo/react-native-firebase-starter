@@ -67,3 +67,44 @@ export const deleteTortilleria = (id)=> {
 deleteTortilleriasSuccess = () => ({
   type: ActionTypes.DELETE_TORTILLERIA_SUCCESS
 });
+
+
+export const getReportes =  (id)=> {
+  return async dispatch => {
+    this.ref = firebase.firestore().collection('tortillerias').doc(id).collection('reportes');
+
+    this.observer = this.ref.onSnapshot(docSnapshot => {
+      let arrayData = [];
+      docSnapshot.forEach(function(element) {
+        arrayData.push({...element.data(),key:element.id});
+      });
+      dispatch(getReportesSuccess(arrayData))
+    }, err => {
+      dispatch(getReportesFail())
+    });
+
+    this.ref = firebase.firestore().collection('settings').doc('report')
+    this.observer = this.ref.onSnapshot(docSnapshot => {
+      let costoMasa = docSnapshot.data().costoMasa;
+      console.warn(docSnapshot.data());
+      dispatch(getSettingsSuccess(costoMasa))
+    }, err => {
+      dispatch(getReportesFail())
+    });
+  }
+}
+
+getSettingsSuccess = (costoMasa) => ({
+  type: ActionTypes.LOAD_SETTINGS_SUCCESS,
+  costoMasa: costoMasa
+});
+
+getReportesSuccess = (reportes) => ({
+  type: ActionTypes.LOAD_REPORTES_SUCCESS,
+  reportes: reportes
+});
+
+
+getReportesFail = () => ({
+  type: ActionTypes.LOAD_REPORTES_FAIL
+});

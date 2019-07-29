@@ -4,6 +4,7 @@ const INITIAL_STATE = {
   user: null,
   isAdmin:false,
   tortillerias:[],
+  reportes:[],
   error:''
 };
 
@@ -30,6 +31,18 @@ function sessionReducer(state = INITIAL_STATE, action) {
       }
     }
     case ActionTypes.LOAD_TORTILLERIAS_FAIL: {
+      return {
+        ...state,
+        error:'Error al cargar tortillerias'
+      }
+    }
+    case ActionTypes.LOAD_REPORTES_SUCCESS: {
+      return {
+        ...state,
+        reportes: action.reportes
+      }
+    }
+    case ActionTypes.LOAD_REPORTES_FAIL: {
       return {
         ...state,
         error:'Error al cargar tortillerias'

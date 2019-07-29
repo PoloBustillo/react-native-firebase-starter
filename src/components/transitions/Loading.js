@@ -1,5 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import * as actionCreators from '../../actions';
 import {
   StyleSheet,
   View,
@@ -10,22 +11,32 @@ import {
 } from 'react-native';
 import logo from '../../logo.png';
 import firebase from 'react-native-firebase'
+import { BackHandler } from "react-native";
 
 class Loading extends React.Component {
-
   _isMounted = false;
+
+  handleBackButton= ()=>{
+    this.props.navigation.popToTop();
+    return true;
+  }
+
   componentDidMount(){
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton)
     this._isMounted = true;
-    var random = Math.random() * (4000 - 1000) + 1000;
+    var random = Math.random() * (2000 - 500) + 500;
     setTimeout(()=>
       firebase.auth().onAuthStateChanged((user) => {
+        if(this.props.navigation.state.params!==undefined
+         && this.props.navigation.state.params.view==='report'){
+          this.props.navigation.navigate('ReportList',this.props.navigation.state.params)
+        }
         if (user) {
           this.props.navigation.navigate('Main')
         }else {
           this.props.navigation.navigate('Main')
         }
      }), random);
-
   }
 
   componentWillUnmount() {
@@ -49,7 +60,6 @@ class Loading extends React.Component {
 
 
   render(){
-
     const spin = this.state.spinValue.interpolate({
       inputRange: [0, 1],
       outputRange: ['0deg', '360deg']
@@ -86,7 +96,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = {
-
+  ...actionCreators
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Loading);

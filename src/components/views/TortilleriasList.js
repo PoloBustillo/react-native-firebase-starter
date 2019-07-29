@@ -47,13 +47,11 @@ class TortilleriasList extends React.Component {
     setState({isVisible:false});
   }
 
-  async componentWillMount(){
-    this.props.loginUser();
+  componentWillMount(){
     this.props.getTortillerias();
+    this.props.loginUser();
     this.props.loadProducts();
-
-
-    firebase.messaging()
+    /*firebase.messaging()
         .subscribeToTopic('reportes')
         .then(response => console.warn('response from FCM TOPIC' + response))
         .catch(error =>  console.warn('error from FCM TOPIC'+ error));
@@ -90,7 +88,7 @@ class TortilleriasList extends React.Component {
             console.warn('FOREGROUND NOTIFICATION LISTENER: \n', notification_to_be_displayed);
 
             firebase.notifications().displayNotification(notification_to_be_displayed);
-        });
+        });*/
   }
 
   renderItem = ({ item, index }) => {
@@ -109,7 +107,10 @@ class TortilleriasList extends React.Component {
     return (
       <TouchableOpacity
         style={styles.item}
-        onPress={()=>{this.props.navigation.navigate('ReportList',item)}}
+        onPress={()=>{
+          this.props.getReportes(item.key);
+          this.props.navigation.navigate('Loading',{...item, view:'report'})}
+        }
       >
         <Grid>
           <Row size={4} style={{marginTop:20}}>
@@ -150,7 +151,7 @@ class TortilleriasList extends React.Component {
       <View>
         <ScrollView>
           <Nav
-            title='Home'
+            title='Tortillerias'
             navigation={this.props.navigation}
             leftIcon={{
             type: 'ionicon',

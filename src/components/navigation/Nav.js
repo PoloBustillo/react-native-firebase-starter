@@ -14,7 +14,7 @@ signOutUser = async () => {
 const Nav = ({ title, navigation, leftIcon }) => (
   <View style={{ backgroundColor: 'white' }}>
     <View style={styles.container}>
-      <View style={styles.leftRow}>
+      {/*<View style={styles.leftRow}>
         <Icon
           size={34}
           type="ionicon"
@@ -28,7 +28,7 @@ const Nav = ({ title, navigation, leftIcon }) => (
           onPress={() => navigation.openDrawer()}
           {...leftIcon}
         />
-      </View>
+      </View>*/}
       <View style={styles.centerRow}>
         <Text style={styles.titleText} numberOfLines={1}>
           {title}

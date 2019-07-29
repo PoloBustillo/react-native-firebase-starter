@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
 import * as actionCreators from '../../actions';
 import {connect} from 'react-redux';
+import moment from 'moment';
+import DatePicker from 'react-native-datepicker';
+import firebase from 'react-native-firebase';
+import NumberFormat from 'react-number-format';
 import {
   ImageBackground,
   ScrollView,
@@ -22,16 +26,55 @@ import InfoText from '../elements/InfoText';
 class ReportInfo extends Component {
 
   state={
-    masaMolino:'',
-    masaHarina:'',
-    masaSobrante:'',
-    masaFria:'',
-    tortillaAnterior:'',
-    tortillaSobrante:'',
-    total:'',
-    productosCuenta:[]
+    masaMolino:0,
+    masaHarina:0,
+    masaSobrante:0,
+    masaFria:0,
+    tortillaAnterior:0,
+    tortillaSobrante:0,
+    total:0,
+    stock:{},
+    count:{},
+    date:moment(new Date()).format("DD-MM-YYYY").toString()
+  }
+  componentDidMount(){
+    this.setState({...this.props.navigation.state.params, count:{}});
+    this.findReports(moment(new Date()).format("DD-MM-YYYY").toString());
   }
 
+  updateTortilleria = (name,stock, id)=>{
+    let newStock=stock;
+    for(proCount in this.state.count){
+      newStock[proCount]=newStock[proCount]-this.state.count[proCount]
+    }
+    var addDoc = firebase.firestore().collection('tortillerias').doc(id)
+      .update({
+        name: name,
+        stock: newStock
+      })
+      .then(ref => {
+        console.log('Updated document with ID: ', ref);
+    });
+  }
+
+  findReports = (date)=>{
+    let flag = this.props.navigation.state.params.reportes.some(
+      function(element) {
+        return element.fechaString === date;
+    });
+    this.setState({flagReport:flag});
+
+    let yesterday = this.props.navigation.state.params.reportes.find(
+      function(element) {
+        return element.fechaString === moment(date, 'DD-MM-YYYY').subtract(1, 'days').format("DD-MM-YYYY").toString();
+    });
+    masaFria = yesterday===undefined?0: yesterday.masaSobrante
+    tortillaAnterior = yesterday===undefined?0: yesterday.tortillaSobrante
+    this.setState({yesterdayReport:yesterday});
+    this.setState({masaFria:masaFria});
+    this.setState({tortillaAnterior:tortillaAnterior});
+    this.setState({flagReport:flag});
+  }
   _renderHeader(item, expanded) {
     return (
       <View style={{
@@ -53,17 +96,29 @@ class ReportInfo extends Component {
   _renderContent(item) {
     return (
       <Grid style={{marginTop:10}}>
-        <Col/>
-        <Col>
+        <Col size={1}>
+        </Col>
+        <Col size={3}>
+          <Text style={{ fontWeight: "600" }}>
+            Inventario
+          </Text>
+          <Text style={{ fontWeight: "600" }}>
+            {`${this.state.stock[item.name]} ${item.name}`}
+          </Text>
+        </Col>
+        <Col size={3}>
+          <Text style={{ fontWeight: "600" }}>
+            Vendidos
+          </Text>
           <NumericInput
-            totalWidth={150}
-            onChange={(value)=>this.setState(prevState=>({
-              stock: {                   // object that we want to update
-                ...prevState.stock,    // keep all other key-value pairs
-                [item.name]:value     // update the value of specific key
+            value={this.state.count[item.name]}
+            totalWidth={120}
+            onChange={
+              (value)=>{
+                let temp = {...this.state.count,[item.name]:value}
+                this.setState({count:temp})
               }
-            }))}
-            minValue={0}
+            }
             totalHeight={40}
             iconSize={25}
             step={1}
@@ -74,10 +129,18 @@ class ReportInfo extends Component {
             rightButtonBackgroundColor='#EA3788'
             leftButtonBackgroundColor='#E56B70'/>
         </Col>
-        <Col/>
+        <Col size={3}>
+          <Text style={{ fontWeight: "600", marginLeft:10}}>
+            {`Total
+              ${this.state.stock[item.name]}-${this.state.count[item.name]===undefined?0:this.state.count[item.name]}`
+            }
+          </Text>
+        </Col>
+
       </Grid>
     );
   }
+
 
   renderDetail = () => {
     return (
@@ -154,17 +217,36 @@ class ReportInfo extends Component {
   }
 
   calcularCuenta = ()=>{
-
+    let harinaDinero = this.state.masaHarina*2.5*this.props.costoMasa;
+    let masaMolinoDinero = this.state.masaMolino*this.props.costoMasa;
+    let masaFriadDinero = this.state.masaFria*this.props.costoMasa;
+    let masaSobranteDinero = this.state.masaSobrante*this.props.costoMasa;
+    let tortillaDinero=this.state.tortillaAnterior-this.state.tortillaSobrante
+    console.warn(this.state.productosCuenta);
+    return(
+      harinaDinero+masaMolinoDinero+masaFriadDinero-masaSobranteDinero+tortillaDinero
+    )
   }
   renderDescription = () => {
     return (
       <View>
-        <Text style={styles.priceText}>$1,175,000</Text>
+        <Text  style={styles.priceText}>
+        <NumberFormat
+          renderText={value => <Text>{value}</Text>}
+          decimalScale={2}
+          fixedDecimalScaler
+          value={this.calcularCuenta()}
+          displayType={'text'}
+          thousandSeparator={true}
+          prefix={'$'} />
+        </Text>
       </View>
     )
   }
 
   render() {
+    console.warn(this.state.stock);
+    if(!this.state.flagReport){
     return (
       <View style={styles.mainviewStyle}>
         <Nav
@@ -176,6 +258,32 @@ class ReportInfo extends Component {
           size: 26,
           }} />
         <ScrollView style={styles.scroll}>
+          <DatePicker
+           style={{width: 200, marginLeft:60}}
+           date={this.state.date}
+           mode="date"
+           placeholder="Fecha de reporte"
+           format="DD-MM-YYYY"
+           minDate="25-07-2019"
+           confirmBtnText="Confirm"
+           cancelBtnText="Cancel"
+           customStyles={{
+             dateIcon: {
+               position: 'absolute',
+               left: 8,
+               top: 4,
+               marginLeft: 40
+             },
+             dateInput: {
+               marginLeft: 40
+             }
+             // ... You can check the source to find the other keys.
+           }}
+           onDateChange={(date) => {
+             this.setState({date: date});
+             this.findReports(date);
+         }}
+         />
           <Grid>
             <Col size={7}>
               <View style={styles.productRow}>{this.renderDetail()}</View>
@@ -194,21 +302,70 @@ class ReportInfo extends Component {
              renderContent={this._renderContent.bind(this)}
            />
           </Content>
-          <InfoText text="Masa Fria:" style={styles.container}/>
-          <InfoText text="Tortilla dia anterior:" style={styles.container}/>
+          <InfoText text={`Masa Fria: ${this.state.masaFria}`} style={styles.container}/>
+          <InfoText text={`Tortilla ayer ($): ${this.state.tortillaAnterior}`}style={styles.container}/>
           <View style={styles.productRow}>{this.renderDescription()}</View>
         </ScrollView>
         <View style={styles.footer}>
-          <TouchableOpacity style={styles.buttonFooter} onPress={()=>{this.props.navigation.navigate('ReportInfo')}}>
+          <TouchableOpacity style={styles.buttonFooter} onPress={()=>{
+            this.props.navigation.goBack(null);
+            this.updateTortilleria(this.state.name,
+              this.state.stock, this.state.key)
+          }}>
             <Text style={styles.textFooter}>GUARDAR</Text>
           </TouchableOpacity>
           <View style={styles.borderCenter} />
-          <TouchableOpacity style={styles.buttonFooter}>
+          <TouchableOpacity style={styles.buttonFooter} onPress={()=>{
+            this.props.navigation.goBack(null);
+          }}>
             <Text style={styles.textFooter}>CANCELAR</Text>
           </TouchableOpacity>
         </View>
       </View>
     )
+    }else{
+      return(
+        <View style={styles.mainviewStyle}>
+          <Nav
+            title={`Reporte de ${this.props.navigation.state.params.name}`}
+            navigation={this.props.navigation}
+            leftIcon={{
+            type: 'ionicon',
+            name: 'md-list',
+            size: 26,
+            }} />
+          <ScrollView style={styles.scroll}>
+            <DatePicker
+             style={{width: 200, marginLeft:60}}
+             date={this.state.date}
+             mode="date"
+             placeholder="Fecha de reporte"
+             format="DD-MM-YYYY"
+             minDate="25-07-2019"
+             confirmBtnText="Confirm"
+             cancelBtnText="Cancel"
+             customStyles={{
+               dateIcon: {
+                 position: 'absolute',
+                 left: 8,
+                 top: 4,
+                 marginLeft: 40
+               },
+               dateInput: {
+                 marginLeft: 40
+               }
+               // ... You can check the source to find the other keys.
+             }}
+             onDateChange={(date) => {
+               this.setState({date: date});
+               this.findReports(date);
+           }}
+           />
+           <Text style={styles.detailText}>Reporte para este dia ya existe!!</Text>
+        </ScrollView>
+      </View>
+      );
+    }
   }
 }
 
@@ -314,7 +471,7 @@ const mapStateToProps = (state) => {
   return {
     productos:state.settingsReducer.productos,
     tortillerias:state.sessionReducer.tortillerias,
-    user:state.sessionReducer.user
+    costoMasa:state.settingsReducer.costoMasa,
   }
 }
 

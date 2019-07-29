@@ -14,6 +14,12 @@ function settingsReducer(state = INITIAL_STATE, action) {
         productos: action.productos
       }
     }
+    case ActionTypes.LOAD_SETTINGS_SUCCESS: {
+      return {
+        ...state,
+        costoMasa: action.costoMasa
+      }
+    }
     case ActionTypes.LOAD_PRODUCTS_FAIL: {
       return {
         ...state,
